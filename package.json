@@ -1,0 +1,10 @@
+{
+  "name": "obd-fehlercode-finder",
+  "version": "1.0.0",
+  "description": "Static OBD-II fault code finder – SEO-optimized, no backend required.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
