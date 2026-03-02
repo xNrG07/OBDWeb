@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Static OBD-II fault code finder – SEO-optimized, no backend required.",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "serve": "node build.js && node server.js",
+    "start": "node build.js && node server.js"
   },
   "author": "",
   "license": "MIT"
