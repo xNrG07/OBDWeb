@@ -1,0 +1,14 @@
+[
+  {"slug":"vw","name":"Volkswagen","aliases":["volkswagen","vw"]},
+  {"slug":"audi","name":"Audi","aliases":["audi"]},
+  {"slug":"bmw","name":"BMW","aliases":["bmw"]},
+  {"slug":"mercedes","name":"Mercedes-Benz","aliases":["mercedes","mercedes benz","mercedes-benz","mb"]},
+  {"slug":"porsche","name":"Porsche","aliases":["porsche"]},
+  {"slug":"skoda","name":"Škoda","aliases":["skoda","škoda"]},
+  {"slug":"seat","name":"SEAT","aliases":["seat"]},
+  {"slug":"opel","name":"Opel","aliases":["opel"]},
+  {"slug":"ford","name":"Ford","aliases":["ford"]},
+  {"slug":"toyota","name":"Toyota","aliases":["toyota"]},
+  {"slug":"hyundai","name":"Hyundai","aliases":["hyundai"]},
+  {"slug":"kia","name":"Kia","aliases":["kia"]}
+]

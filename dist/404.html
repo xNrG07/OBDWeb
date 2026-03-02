@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <title>404 – Seite nicht gefunden</title>
+  <meta name="description" content="Die Seite wurde nicht gefunden. Suche nach einem OBD-II Fehlercode.">
+  <link rel="canonical" href="https://example.com/404.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo">OBD <span>Fehlercode Finder</span></a>
+    <nav>
+      <a href="/">Start</a>
+      <a href="/marken/">Marken (DACH)</a>
+      <a href="/wissen/">Wissen</a>
+      <a href="/#bmw-section">BMW (Beta)</a>
+      <a href="/datenschutz/">Datenschutz</a>
+      <a href="/impressum/">Impressum</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="container">
+    <div class="code-header">
+      <h1>404 – Seite nicht gefunden</h1>
+      <p class="short-meaning">Vielleicht war der Link falsch. Suche nach einem Fehlercode (z. B. P0420) oder geh zurück zur Startseite.</p>
+
+      <div class="search-controls" style="margin-top:1rem">
+        <div class="select-wrap">
+          <select id="b" class="select" aria-label="Marke">
+            <option value="">Alle Marken</option>
+            <option value="vw">Volkswagen</option>
+<option value="audi">Audi</option>
+<option value="bmw">BMW</option>
+<option value="mercedes">Mercedes-Benz</option>
+<option value="porsche">Porsche</option>
+<option value="skoda">Škoda</option>
+<option value="seat">SEAT</option>
+<option value="opel">Opel</option>
+<option value="ford">Ford</option>
+<option value="toyota">Toyota</option>
+<option value="hyundai">Hyundai</option>
+<option value="kia">Kia</option>
+          </select>
+        </div>
+        <div class="search-box wide">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="q" placeholder="Code eingeben…" autocomplete="off" aria-label="Code suchen">
+        </div>
+        <button class="btn primary" type="button" id="go">Suchen</button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p><a href="/">Zur Startseite</a> · <a href="/marken/">Marken</a> · <a href="/wissen/">Wissen</a></p>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="container">
+    <div class="disclaimer">
+      <p><strong>Haftungsausschluss:</strong> Diese Website dient ausschließlich der allgemeinen Information. Sie stellt keine Reparatur-, Rechts- oder Kaufberatung dar. Für Diagnose und Reparatur wende dich an eine qualifizierte Kfz-Werkstatt. Alle Angaben ohne Gewähr.</p>
+      <p style="margin-top:0.75rem">
+        <a href="/marken/">Marken</a> ·
+        <a href="/wissen/">Wissen</a> ·
+        <a href="/datenschutz/">Datenschutz</a> ·
+        <a href="/impressum/">Impressum</a>
+      </p>
+      <p style="margin-top:0.75rem">&copy; 2026 OBD Fehlercode Finder</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function norm(q){ return String(q||"").trim().toUpperCase().replace(/s+/g,"").replace(/[^A-Z0-9]/g, ""); }
+  function isObd(q){ return /^[PCBU]d{4}$/.test(q); }
+
+  var inp = document.getElementById('q');
+  var sel = document.getElementById('b');
+  var go = document.getElementById('go');
+
+  function open(){
+    var v = norm(inp.value);
+    var b = sel.value;
+    if(!v){ window.location.href = "/"; return; }
+    if(isObd(v)){
+      if(b){ window.location.href = "/marke/" + b + '/code/' + v + '/'; return; }
+      window.location.href = "/code/" + v + '/';
+      return;
+    }
+    window.location.href = "/" + '?brand=' + encodeURIComponent(b) + '&q=' + encodeURIComponent(inp.value);
+  }
+
+  go.addEventListener('click', open);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') open(); });
+})();
+</script>
+</body>
+</html>

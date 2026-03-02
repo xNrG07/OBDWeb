@@ -1,120 +1,112 @@
-# OBD Fehlercode Finder
+# OBD Fehlercode Finder (DACH + Marken)
 
-A static, SEO-optimized website for looking up OBD-II fault codes. No backend, no database, no frameworks – just HTML, CSS, and vanilla JS.
+Static, SEO-friendly website for looking up **OBD‑II fault codes** (German), plus **brand-focused pages for the DACH market**.
+
+No backend, no framework. Build once → deploy the generated `dist/` anywhere.
 
 ## Features
 
-- **150 OBD-II codes** with full descriptions in German
-- Per-code detail pages: meaning, symptoms, causes, urgency, first checks, workshop advice, FAQs
-- Client-side search (instant, no server needed)
-- Category browsing (Catalyst, Fuel, Misfire, EVAP, Sensors, EGR, Throttle, Transmission)
-- SEO: unique `<title>` + `<meta description>` per page, canonical URLs, FAQPage JSON-LD, auto-generated sitemap.xml, robots.txt
+- **OBD‑II Codes** with full pages: meaning, symptoms, causes, urgency, safe first checks, workshop advice, FAQs
+- **DACH brand focus**
+  - Brand landing pages: `/marke/<brand>/`
+  - Brand + code pages (e.g. `P0420 VW`): `/marke/<brand>/code/<P0XXX>/`
+- **Client-side search** with optional brand selection on the homepage
+- **Wissen pages** (short guides): `/wissen/...`
+- SEO basics:
+  - unique `<title>` + `<meta description>` per page
+  - canonical URLs
+  - FAQPage JSON‑LD on code pages
+  - auto-generated `sitemap.xml` and `robots.txt`
 - AdSense-ready placeholders (no scripts included)
-- Fully static output – deploy anywhere
+- Simple **validation** on build (fails fast when JSON structure is broken)
 
 ## Project Structure
 
 ```
-obd-fehlercode-finder/
+OBDWeb-main/
 ├── package.json
-├── build.js              # Build script: JSON → static HTML
-├── generate-codes.js     # One-time generator for codes.json
+├── build.js
+├── server.js
 ├── src/
-│   ├── codes.json        # All 150 OBD codes (data source)
-│   └── style.css         # Stylesheet
-├── dist/                 # Build output (generated)
-│   ├── index.html
-│   ├── sitemap.xml
-│   ├── robots.txt
-│   └── code/
-│       ├── P0420/index.html
-│       ├── P0171/index.html
-│       └── ... (150 code pages)
-└── README.md
+│   ├── codes.json
+│   ├── bmw-codes.json
+│   ├── brands.json
+│   ├── brand-overrides.json
+│   └── style.css
+└── dist/                  # generated
+    ├── index.html
+    ├── marken/index.html
+    ├── marke/<brand>/index.html
+    ├── marke/<brand>/code/<P0XXX>/index.html
+    ├── code/<P0XXX>/index.html
+    ├── bmw/<code>/index.html
+    ├── wissen/.../index.html
+    ├── sitemap.xml
+    ├── robots.txt
+    └── 404.html
 ```
 
 ## Quick Start
 
 ```bash
-# 1. Build the site
+npm install
 npm run build
-
-# 2. Preview locally (any static server)
-npx serve dist
-# or: python3 -m http.server -d dist 8000
+node server.js
 ```
 
-Open `http://localhost:3000` (serve) or `http://localhost:8000` (python).
+Open: `http://localhost:3000`
 
 ## Deploy
 
-The `dist/` folder is a fully self-contained static site. Deploy it to:
+The `dist/` folder is a fully self-contained static site.
 
-### GitHub Pages
+### GitHub Pages (subpath)
+
 ```bash
-# Push dist/ to gh-pages branch
-npx gh-pages -d dist
+SITE_URL="https://username.github.io" BASE_PATH="/REPO" npm run build
 ```
 
-### Vercel
+### Root domain
+
 ```bash
-# vercel.json (create in project root):
-# { "outputDirectory": "dist" }
-vercel --prod
+SITE_URL="https://deine-domain.tld" npm run build
 ```
-
-### Netlify
-Set build command to `node build.js` and publish directory to `dist`.
-
-### Any Static Host
-Just upload the contents of `dist/` to your web server.
 
 ## Configuration
 
-The build uses these environment variables:
+Environment variables:
 
-- `SITE_URL` (required for production): Your full domain for canonical URLs & sitemap  
-  Example: `https://obd-fehlercode-finder.de`
-- `BASE_PATH` (optional): Only needed if you deploy under a subpath (e.g. GitHub Pages)  
-  Example: `/OBDWeb-main`
+- `SITE_URL` (important): used for canonical URLs and the sitemap
+- `BASE_PATH` (optional): if you deploy under a subpath (e.g., GitHub Pages)
 
-Examples:
+## Brand-specific notes (optional)
 
-```bash
-# Root domain deployment
-SITE_URL="https://obd-fehlercode-finder.de" npm run build
+If you want **brand-specific, source-backed** additions for a generic OBD‑II code, add entries to:
 
-# GitHub Pages (subpath)
-SITE_URL="https://username.github.io" BASE_PATH="/OBDWeb-main" npm run build
+- `src/brand-overrides.json`
+
+Structure:
+
+```json
+{
+  "overrides": [
+    {
+      "brand": "vw",
+      "code": "P0420",
+      "notes": ["Short note (should be source-backed)."],
+      "sources": ["https://..."]
+    }
+  ]
+}
 ```
-
-The build also generates:
-- `/datenschutz/` and `/impressum/` (placeholder texts – replace bracketed fields)
-- `style.css` + `favicon.svg` in the dist root
-
-## Adding Codes
-
-
-1. Add entries to `src/codes.json` (follow existing structure)
-2. Run `npm run build`
-3. Deploy updated `dist/`
 
 ## AdSense Integration
 
-Search for `<!-- Ad placeholder` in the generated HTML. Replace the placeholder `<div class="ad-slot">` with your AdSense ad unit code. There are two placements:
-- **index.html**: below the search field
-- **Each code page**: after the "Wie dringend?" section
-
-## Tech Stack
-
-- Node.js (build only, no runtime dependency)
-- Plain HTML5, CSS3, vanilla JavaScript
-- Zero npm dependencies
-- Zero frameworks
+Search for `<!-- Ad placeholder -->` in the generated HTML and replace the `<div class="ad-slot">` block with your AdSense unit.
 
 ## Disclaimer
 
-This site provides general information only. It does not constitute repair, legal, or purchase advice. For diagnosis and repair, consult a qualified workshop.
+General information only. No repair/legal/buying advice. For diagnosis and repair, consult a qualified workshop.
 
 ## License
 
