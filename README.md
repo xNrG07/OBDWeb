@@ -71,12 +71,29 @@ Just upload the contents of `dist/` to your web server.
 
 ## Configuration
 
-Edit `build.js` line 8 to set your domain:
-```js
-const SITE_URL = "https://obd-fehlercode-finder.de";
+The build uses these environment variables:
+
+- `SITE_URL` (required for production): Your full domain for canonical URLs & sitemap  
+  Example: `https://obd-fehlercode-finder.de`
+- `BASE_PATH` (optional): Only needed if you deploy under a subpath (e.g. GitHub Pages)  
+  Example: `/OBDWeb-main`
+
+Examples:
+
+```bash
+# Root domain deployment
+SITE_URL="https://obd-fehlercode-finder.de" npm run build
+
+# GitHub Pages (subpath)
+SITE_URL="https://username.github.io" BASE_PATH="/OBDWeb-main" npm run build
 ```
 
+The build also generates:
+- `/datenschutz/` and `/impressum/` (placeholder texts – replace bracketed fields)
+- `style.css` + `favicon.svg` in the dist root
+
 ## Adding Codes
+
 
 1. Add entries to `src/codes.json` (follow existing structure)
 2. Run `npm run build`

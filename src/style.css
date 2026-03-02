@@ -58,11 +58,15 @@ header .container {
 }
 .logo span { color: var(--accent); }
 
+header nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
 header nav a {
   color: var(--text-muted);
   font-size: 0.875rem;
-  margin-left: 1.25rem;
+  text-decoration: none;
 }
+header nav a:hover { color: var(--text); text-decoration: underline; }
+
 header nav a:hover { color: var(--accent); }
 
 main { padding: 2rem 0 3rem; }
@@ -333,3 +337,25 @@ footer .disclaimer { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem
   header .container { justify-content: center; text-align: center; }
   header nav a { margin-left: 0; margin-right: 1rem; }
 }
+
+/* ── Notes / Legal pages ─────────────────── */
+.note {
+  background: #eef2ff;
+  border: 1px solid var(--border);
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+.section-divider {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.legal h2 {
+  font-size: 1.1rem;
+  margin: 1.25rem 0 0.5rem;
+}
+.legal p { margin: 0.5rem 0; }
+.legal ul { margin: 0.5rem 0 0.5rem 1.25rem; }
