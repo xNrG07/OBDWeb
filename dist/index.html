@@ -1,596 +1,121 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OBD Fehlercode Finder – OBD-II Fehlercodes einfach erklärt</title>
-<meta name="description" content="OBD-II Fehlercodes schnell finden und verstehen. Bedeutung, Symptome, Ursachen und erste Checks für über 150 Codes.">
-<link rel="canonical" href="https://obd-fehlercode-finder.de/">
-<style>/* ============================================
-   OBD Fehlercode Finder – Main Stylesheet
-   ============================================ */
-
-:root {
-  --bg: #f8f9fa;
-  --surface: #ffffff;
-  --text: #1a1a2e;
-  --text-muted: #5a5a7a;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --border: #e2e8f0;
-  --red: #dc2626;
-  --orange: #ea580c;
-  --green: #16a34a;
-  --radius: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  --max-w: 780px;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { font-size: 16px; scroll-behavior: smooth; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-}
-
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-/* ── Layout ─────────────────────────────── */
-.container { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem; }
-
-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 0;
-}
-
-header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.logo {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text);
-  text-decoration: none;
-}
-.logo span { color: var(--accent); }
-
-header nav a {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  margin-left: 1.25rem;
-}
-header nav a:hover { color: var(--accent); }
-
-main { padding: 2rem 0 3rem; }
-
-footer {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 1.5rem 0;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: center;
-}
-footer a { color: var(--text-muted); }
-footer .disclaimer { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem; }
-
-/* ── Search ─────────────────────────────── */
-.search-section { text-align: center; margin-bottom: 2.5rem; }
-.search-section h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-.search-section p { color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem; }
-
-.search-box {
-  position: relative;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 0.8rem 1rem 0.8rem 2.75rem;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 1rem;
-  background: var(--surface);
-  transition: border-color 0.2s;
-  outline: none;
-}
-.search-box input:focus { border-color: var(--accent); }
-.search-box input::placeholder { color: #aaa; }
-
-.search-box svg {
-  position: absolute;
-  left: 0.85rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  color: #aaa;
-  pointer-events: none;
-}
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-top: 4px;
-  max-height: 320px;
-  overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  z-index: 100;
-  display: none;
-}
-.search-results.open { display: block; }
-
-.search-results a {
-  display: block;
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  font-size: 0.9rem;
-}
-.search-results a:last-child { border-bottom: none; }
-.search-results a:hover { background: #f1f5f9; text-decoration: none; }
-.search-results a strong { color: var(--accent); margin-right: 0.5rem; }
-
-.search-results .no-results {
-  padding: 1rem;
-  color: var(--text-muted);
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-/* ── Ad Slot ────────────────────────────── */
-.ad-slot {
-  background: #f1f5f9;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  text-align: center;
-  color: #b0b0b0;
-  font-size: 0.8rem;
-  margin: 1.5rem 0;
-}
-
-/* ── Category Tags ──────────────────────── */
-.categories { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
-
-.cat-tag {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.cat-tag:hover, .cat-tag.active { background: var(--accent); color: #fff; border-color: var(--accent); text-decoration: none; }
-
-/* ── Code List ──────────────────────────── */
-.code-list { list-style: none; }
-
-.code-list li {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 0.5rem;
-  transition: box-shadow 0.2s;
-}
-.code-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-.code-list a {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  color: var(--text);
-  gap: 0.75rem;
-}
-.code-list a:hover { text-decoration: none; }
-
-.code-badge {
-  font-family: "SF Mono", SFMono-Regular, Consolas, monospace;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--accent);
-  min-width: 60px;
-}
-
-.code-title { font-size: 0.9rem; flex: 1; }
-
-.urgency-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.urgency-dot.low { background: var(--green); }
-.urgency-dot.medium { background: var(--orange); }
-.urgency-dot.high { background: var(--red); }
-
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 2rem 0 0.75rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 2px solid var(--accent);
-  display: inline-block;
-}
-
-/* ── Code Detail Page ───────────────────── */
-.breadcrumb {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-}
-.breadcrumb a { color: var(--text-muted); }
-.breadcrumb a:hover { color: var(--accent); }
-
-.code-header h1 {
-  font-size: 1.5rem;
-  line-height: 1.35;
-  margin-bottom: 0.5rem;
-}
-
-.code-header .short-meaning {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-}
-
-.urgency-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  margin-bottom: 1.5rem;
-}
-.urgency-badge.low { background: #dcfce7; color: #15803d; }
-.urgency-badge.medium { background: #fff7ed; color: #c2410c; }
-.urgency-badge.high { background: #fef2f2; color: #dc2626; }
-
-.content-section { margin-bottom: 1.75rem; }
-.content-section h2 { font-size: 1.15rem; margin-bottom: 0.6rem; }
-.content-section p { margin-bottom: 0.75rem; }
-
-.content-section ul {
-  list-style: disc;
-  padding-left: 1.5rem;
-}
-.content-section ul li { margin-bottom: 0.3rem; font-size: 0.95rem; }
-
-.faq-list { list-style: none; padding: 0; }
-.faq-item {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 0.5rem;
-  overflow: hidden;
-}
-.faq-question {
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--surface);
-  user-select: none;
-}
-.faq-question::after {
-  content: "+";
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  transition: transform 0.2s;
-}
-.faq-item.open .faq-question::after {
-  content: "−";
-}
-.faq-answer {
-  padding: 0 1rem 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  display: none;
-}
-.faq-item.open .faq-answer { display: block; }
-
-.related-codes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-.related-codes a {
-  font-family: "SF Mono", SFMono-Regular, Consolas, monospace;
-  font-size: 0.85rem;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--accent);
-  font-weight: 600;
-}
-.related-codes a:hover { background: var(--accent); color: #fff; text-decoration: none; }
-
-/* ── Responsive ─────────────────────────── */
-@media (max-width: 600px) {
-  .search-section h1 { font-size: 1.35rem; }
-  .code-header h1 { font-size: 1.25rem; }
-  .code-list a { padding: 0.6rem 0.75rem; }
-  header .container { justify-content: center; text-align: center; }
-  header nav a { margin-left: 0; margin-right: 1rem; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <title>OBD Fehlercode Finder – OBD-II &amp; BMW Fehlercodes</title>
+  <meta name="description" content="OBD-II und BMW Fehlercodes schnell finden und verstehen. Über 211 Codes mit Bedeutung, Symptomen und Ursachen.">
+  <link rel="canonical" href="https://obd-fehlercode-finder.de/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","url":"https://obd-fehlercode-finder.de/","name":"OBD Fehlercode Finder","potentialAction":{"@type":"SearchAction","target":"https://obd-fehlercode-finder.de/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 </head>
 <body>
-<header><div class="container"><a href="/" class="logo">OBD <span>Fehlercode Finder</span></a><nav><a href="/">Startseite</a></nav></div></header>
-<main>
-<div class="container">
-
-<div class="search-section">
-  <h1>OBD-II Fehlercode nachschlagen</h1>
-  <p>Gib einen Code ein (z.&nbsp;B. P0420) oder durchsuche die Kategorien.</p>
-  <div class="search-box">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="search" placeholder="Fehlercode eingeben, z.B. P0420 …" autocomplete="off" aria-label="Fehlercode suchen">
-    <div class="search-results" id="results"></div>
+<header>
+  <div class="container">
+    <a href="/" class="logo">OBD <span>Fehlercode Finder</span></a>
+    <nav>
+      <a href="/">Start</a>
+      <a href="/#bmw-section">BMW</a>
+      <a href="/datenschutz/">Datenschutz</a>
+      <a href="/impressum/">Impressum</a>
+    </nav>
   </div>
-</div>
+</header>
+<main>
+  <div class="container">
+    <div class="search-section">
+      <h1>OBD-II &amp; BMW Fehlercode nachschlagen</h1>
+      <p>Code eingeben (z.&nbsp;B. <strong>P0420</strong> oder <strong>2EF5</strong>) oder Kategorien durchsuchen.</p>
 
-<!-- AdSense placeholder: ad below search -->
-<div class="ad-slot"><!-- Ad placeholder – AdSense code here --></div>
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search" placeholder="Fehlercode eingeben…" autocomplete="off" aria-label="Suchen">
+        <div class="search-results" id="results"></div>
+      </div>
 
-<div class="categories"><a href="#cat-catalyst" class="cat-tag">Katalysator</a> <a href="#cat-fuel" class="cat-tag">Kraftstoffsystem</a> <a href="#cat-misfire" class="cat-tag">Zündaussetzer</a> <a href="#cat-evap" class="cat-tag">EVAP-System</a> <a href="#cat-sensor" class="cat-tag">Sensoren</a> <a href="#cat-egr" class="cat-tag">Abgasrückführung</a> <a href="#cat-throttle" class="cat-tag">Drosselklappe / Leerlauf</a> <a href="#cat-transmission" class="cat-tag">Getriebe</a> </div>
+      <p class="note" style="margin-top:0.8rem">
+        Hinweis: <strong>P0xxx</strong> Codes sind standardisiert (OBD-II). <strong>P1xxx</strong> / herstellerspezifische Codes können je nach Hersteller/Modell variieren.
+      </p>
+    </div>
 
-<h2 class="section-title">Häufig gesuchte Codes</h2>
-<ul class="code-list">
-<li><a href="/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0172/"><span class="code-badge">P0172</span><span class="code-title">Gemisch zu fett – Bank 1</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0505/"><span class="code-badge">P0505</span><span class="code-title">Leerlaufregelung – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0301/"><span class="code-badge">P0301</span><span class="code-title">Zündaussetzer Zylinder 1</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0302/"><span class="code-badge">P0302</span><span class="code-title">Zündaussetzer Zylinder 2</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0440/"><span class="code-badge">P0440</span><span class="code-title">EVAP-System Fehlfunktion</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0135/"><span class="code-badge">P0135</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0174/"><span class="code-badge">P0174</span><span class="code-title">Gemisch zu mager – Bank 2</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0430/"><span class="code-badge">P0430</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0700/"><span class="code-badge">P0700</span><span class="code-title">Getriebesteuerung – Fehlfunktion erkannt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0340/"><span class="code-badge">P0340</span><span class="code-title">Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0335/"><span class="code-badge">P0335</span><span class="code-title">Kurbelwellensensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0121/"><span class="code-badge">P0121</span><span class="code-title">Drosselklappensensor (TPS) – Signal nicht plausibel</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
+    <div class="ad-slot"><!-- Ad placeholder --></div>
 
-<h2 class="section-title" id="cat-catalyst">Katalysator</h2>
-<ul class="code-list">
-<li><a href="/code/P0410/"><span class="code-badge">P0410</span><span class="code-title">Sekundärluftsystem – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0411/"><span class="code-badge">P0411</span><span class="code-title">Sekundärluftsystem – Durchfluss nicht korrekt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0412/"><span class="code-badge">P0412</span><span class="code-title">Sekundärluftventil – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0421/"><span class="code-badge">P0421</span><span class="code-title">Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0430/"><span class="code-badge">P0430</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-fuel">Kraftstoffsystem</h2>
-<ul class="code-list">
-<li><a href="/code/P0170/"><span class="code-badge">P0170</span><span class="code-title">Kraftstofftrimmung Fehlfunktion – Bank 1</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0172/"><span class="code-badge">P0172</span><span class="code-title">Gemisch zu fett – Bank 1</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0174/"><span class="code-badge">P0174</span><span class="code-title">Gemisch zu mager – Bank 2</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0175/"><span class="code-badge">P0175</span><span class="code-title">Gemisch zu fett – Bank 2</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0190/"><span class="code-badge">P0190</span><span class="code-title">Kraftstoffdrucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0191/"><span class="code-badge">P0191</span><span class="code-title">Kraftstoffdrucksensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0192/"><span class="code-badge">P0192</span><span class="code-title">Kraftstoffdrucksensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0193/"><span class="code-badge">P0193</span><span class="code-title">Kraftstoffdrucksensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0201/"><span class="code-badge">P0201</span><span class="code-title">Einspritzdüse Zylinder 1 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0202/"><span class="code-badge">P0202</span><span class="code-title">Einspritzdüse Zylinder 2 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0203/"><span class="code-badge">P0203</span><span class="code-title">Einspritzdüse Zylinder 3 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0204/"><span class="code-badge">P0204</span><span class="code-title">Einspritzdüse Zylinder 4 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0205/"><span class="code-badge">P0205</span><span class="code-title">Einspritzdüse Zylinder 5 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0206/"><span class="code-badge">P0206</span><span class="code-title">Einspritzdüse Zylinder 6 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0230/"><span class="code-badge">P0230</span><span class="code-title">Kraftstoffpumpen-Relais – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0234/"><span class="code-badge">P0234</span><span class="code-title">Ladedruckregelung – Ladedruck zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0235/"><span class="code-badge">P0235</span><span class="code-title">Ladedrucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0251/"><span class="code-badge">P0251</span><span class="code-title">Einspritzpumpe – Regelabweichung (Diesel)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0261/"><span class="code-badge">P0261</span><span class="code-title">Einspritzdüse Zyl. 1 – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0262/"><span class="code-badge">P0262</span><span class="code-title">Einspritzdüse Zyl. 1 – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0299/"><span class="code-badge">P0299</span><span class="code-title">Ladedruckregelung – Ladedruck zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0380/"><span class="code-badge">P0380</span><span class="code-title">Glühkerzen-Steuerkreis – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0381/"><span class="code-badge">P0381</span><span class="code-title">Glühkerzen-Kontrollleuchte – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0627/"><span class="code-badge">P0627</span><span class="code-title">Kraftstoffpumpen-Steuerkreis – offen</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-misfire">Zündaussetzer</h2>
-<ul class="code-list">
-<li><a href="/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0301/"><span class="code-badge">P0301</span><span class="code-title">Zündaussetzer Zylinder 1</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0302/"><span class="code-badge">P0302</span><span class="code-title">Zündaussetzer Zylinder 2</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0303/"><span class="code-badge">P0303</span><span class="code-title">Zündaussetzer Zylinder 3</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0304/"><span class="code-badge">P0304</span><span class="code-title">Zündaussetzer Zylinder 4</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0305/"><span class="code-badge">P0305</span><span class="code-title">Zündaussetzer Zylinder 5</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0306/"><span class="code-badge">P0306</span><span class="code-title">Zündaussetzer Zylinder 6</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0307/"><span class="code-badge">P0307</span><span class="code-title">Zündaussetzer Zylinder 7</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0308/"><span class="code-badge">P0308</span><span class="code-title">Zündaussetzer Zylinder 8</span><span class="urgency-dot high" title="Hoch"></span></a></li>
-<li><a href="/code/P0351/"><span class="code-badge">P0351</span><span class="code-title">Zündspule A – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0352/"><span class="code-badge">P0352</span><span class="code-title">Zündspule B – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0353/"><span class="code-badge">P0353</span><span class="code-title">Zündspule C – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0354/"><span class="code-badge">P0354</span><span class="code-title">Zündspule D – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-evap">EVAP-System</h2>
-<ul class="code-list">
-<li><a href="/code/P0440/"><span class="code-badge">P0440</span><span class="code-title">EVAP-System Fehlfunktion</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0441/"><span class="code-badge">P0441</span><span class="code-title">EVAP-System – Spülstrom nicht korrekt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0443/"><span class="code-badge">P0443</span><span class="code-title">EVAP-Spülventil Steuerkreis Fehlfunktion</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0446/"><span class="code-badge">P0446</span><span class="code-title">EVAP-Entlüftungsventil Steuerkreis Fehlfunktion</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0456/"><span class="code-badge">P0456</span><span class="code-title">EVAP-System – sehr kleine Leckage erkannt</span><span class="urgency-dot low" title="Niedrig"></span></a></li>
-<li><a href="/code/P0496/"><span class="code-badge">P0496</span><span class="code-title">EVAP-System – Spülstrom zu hoch (Motor aus)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0497/"><span class="code-badge">P0497</span><span class="code-title">EVAP-System – Spülstrom zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-sensor">Sensoren</h2>
-<ul class="code-list">
-<li><a href="/code/P0010/"><span class="code-badge">P0010</span><span class="code-title">Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0011/"><span class="code-badge">P0011</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0012/"><span class="code-badge">P0012</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0013/"><span class="code-badge">P0013</span><span class="code-title">Nockenwellenverstellung (Auslass) Bank 1 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0014/"><span class="code-badge">P0014</span><span class="code-title">Nockenwellenverstellung (Auslass) Bank 1 – Position zu weit vorgestellt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0016/"><span class="code-badge">P0016</span><span class="code-title">Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor A</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0017/"><span class="code-badge">P0017</span><span class="code-title">Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor B</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0020/"><span class="code-badge">P0020</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0021/"><span class="code-badge">P0021</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – zu weit vorgestellt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0022/"><span class="code-badge">P0022</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – zu weit zurückgestellt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0030/"><span class="code-badge">P0030</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0031/"><span class="code-badge">P0031</span><span class="code-title">Lambda-Sonde B1S1 Heizkreis – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0032/"><span class="code-badge">P0032</span><span class="code-title">Lambda-Sonde B1S1 Heizkreis – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0036/"><span class="code-badge">P0036</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Steuerkreis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0037/"><span class="code-badge">P0037</span><span class="code-title">Lambda-Sonde B1S2 Heizkreis – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0038/"><span class="code-badge">P0038</span><span class="code-title">Lambda-Sonde B1S2 Heizkreis – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0068/"><span class="code-badge">P0068</span><span class="code-title">Drosselklappe/MAP-Sensor – Korrelation</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0100/"><span class="code-badge">P0100</span><span class="code-title">Luftmassenmesser (LMM) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0102/"><span class="code-badge">P0102</span><span class="code-title">Luftmassenmesser – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0103/"><span class="code-badge">P0103</span><span class="code-title">Luftmassenmesser – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0105/"><span class="code-badge">P0105</span><span class="code-title">MAP-Sensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0106/"><span class="code-badge">P0106</span><span class="code-title">MAP-Sensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0107/"><span class="code-badge">P0107</span><span class="code-title">MAP-Sensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0108/"><span class="code-badge">P0108</span><span class="code-title">MAP-Sensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0110/"><span class="code-badge">P0110</span><span class="code-title">Ansauglufttemperatursensor (IAT) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0111/"><span class="code-badge">P0111</span><span class="code-title">Ansauglufttemperatursensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0112/"><span class="code-badge">P0112</span><span class="code-title">Ansauglufttemperatursensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0113/"><span class="code-badge">P0113</span><span class="code-title">Ansauglufttemperatursensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0115/"><span class="code-badge">P0115</span><span class="code-title">Kühlmitteltemperatursensor (ECT) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0116/"><span class="code-badge">P0116</span><span class="code-title">Kühlmitteltemperatursensor – Signal nicht plausibel</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0117/"><span class="code-badge">P0117</span><span class="code-title">Kühlmitteltemperatursensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0118/"><span class="code-badge">P0118</span><span class="code-title">Kühlmitteltemperatursensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0125/"><span class="code-badge">P0125</span><span class="code-title">Kühlmitteltemperatur unzureichend für Gemischregelung</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0130/"><span class="code-badge">P0130</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0131/"><span class="code-badge">P0131</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Spannung zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0132/"><span class="code-badge">P0132</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Spannung zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0133/"><span class="code-badge">P0133</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – langsame Reaktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0134/"><span class="code-badge">P0134</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – keine Aktivität</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0135/"><span class="code-badge">P0135</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0136/"><span class="code-badge">P0136</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0137/"><span class="code-badge">P0137</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Spannung zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0138/"><span class="code-badge">P0138</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Spannung zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0141/"><span class="code-badge">P0141</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0155/"><span class="code-badge">P0155</span><span class="code-title">Lambda-Sonde Bank 2 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0161/"><span class="code-badge">P0161</span><span class="code-title">Lambda-Sonde Bank 2 Sensor 2 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0325/"><span class="code-badge">P0325</span><span class="code-title">Klopfsensor 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0326/"><span class="code-badge">P0326</span><span class="code-title">Klopfsensor 1 – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0327/"><span class="code-badge">P0327</span><span class="code-title">Klopfsensor 1 – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0328/"><span class="code-badge">P0328</span><span class="code-title">Klopfsensor 1 – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0335/"><span class="code-badge">P0335</span><span class="code-title">Kurbelwellensensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0336/"><span class="code-badge">P0336</span><span class="code-title">Kurbelwellensensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0340/"><span class="code-badge">P0340</span><span class="code-title">Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0341/"><span class="code-badge">P0341</span><span class="code-title">Nockenwellensensor Bank 1 – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0345/"><span class="code-badge">P0345</span><span class="code-title">Nockenwellensensor Bank 2 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0460/"><span class="code-badge">P0460</span><span class="code-title">Kraftstoffstandsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0461/"><span class="code-badge">P0461</span><span class="code-title">Kraftstoffstandsensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0462/"><span class="code-badge">P0462</span><span class="code-title">Kraftstoffstandsensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0463/"><span class="code-badge">P0463</span><span class="code-title">Kraftstoffstandsensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0480/"><span class="code-badge">P0480</span><span class="code-title">Kühlerlüfter 1 – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0481/"><span class="code-badge">P0481</span><span class="code-title">Kühlerlüfter 2 – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0500/"><span class="code-badge">P0500</span><span class="code-title">Geschwindigkeitssensor – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0501/"><span class="code-badge">P0501</span><span class="code-title">Geschwindigkeitssensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0502/"><span class="code-badge">P0502</span><span class="code-title">Geschwindigkeitssensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0503/"><span class="code-badge">P0503</span><span class="code-title">Geschwindigkeitssensor – Signal intermittierend</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0530/"><span class="code-badge">P0530</span><span class="code-title">Klimakompressor-Drucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0531/"><span class="code-badge">P0531</span><span class="code-title">Klimakompressor-Drucksensor – Signal außerhalb Bereich</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0545/"><span class="code-badge">P0545</span><span class="code-title">Abgastemperatursensor Bank 1 Sensor 1 – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0546/"><span class="code-badge">P0546</span><span class="code-title">Abgastemperatursensor Bank 1 Sensor 1 – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0562/"><span class="code-badge">P0562</span><span class="code-title">Systemspannung zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0563/"><span class="code-badge">P0563</span><span class="code-title">Systemspannung zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0597/"><span class="code-badge">P0597</span><span class="code-title">Thermostat-Heizelement – Steuerkreis offen</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0600/"><span class="code-badge">P0600</span><span class="code-title">CAN-Bus – Serieller Kommunikationsfehler</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0601/"><span class="code-badge">P0601</span><span class="code-title">Interner Steuergerät-Speicherfehler (Prüfsumme)</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0602/"><span class="code-badge">P0602</span><span class="code-title">Steuergerät – Programmierfehler</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-egr">Abgasrückführung</h2>
-<ul class="code-list">
-<li><a href="/code/P0400/"><span class="code-badge">P0400</span><span class="code-title">AGR-System – Durchfluss Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0402/"><span class="code-badge">P0402</span><span class="code-title">AGR-System – Durchfluss zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0403/"><span class="code-badge">P0403</span><span class="code-title">AGR-Ventil Steuerkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0404/"><span class="code-badge">P0404</span><span class="code-title">AGR-Ventil – Bereich/Leistung außerhalb Spezifikation</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0405/"><span class="code-badge">P0405</span><span class="code-title">AGR-Positionssensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-throttle">Drosselklappe / Leerlauf</h2>
-<ul class="code-list">
-<li><a href="/code/P0121/"><span class="code-badge">P0121</span><span class="code-title">Drosselklappensensor (TPS) – Signal nicht plausibel</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0122/"><span class="code-badge">P0122</span><span class="code-title">Drosselklappensensor – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0123/"><span class="code-badge">P0123</span><span class="code-title">Drosselklappensensor – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0222/"><span class="code-badge">P0222</span><span class="code-title">Drosselklappensensor 2 – Signal zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0223/"><span class="code-badge">P0223</span><span class="code-title">Drosselklappensensor 2 – Signal zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0505/"><span class="code-badge">P0505</span><span class="code-title">Leerlaufregelung – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0506/"><span class="code-badge">P0506</span><span class="code-title">Leerlaufdrehzahl zu niedrig</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0507/"><span class="code-badge">P0507</span><span class="code-title">Leerlaufdrehzahl zu hoch</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
-<h2 class="section-title" id="cat-transmission">Getriebe</h2>
-<ul class="code-list">
-<li><a href="/code/P0700/"><span class="code-badge">P0700</span><span class="code-title">Getriebesteuerung – Fehlfunktion erkannt</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0715/"><span class="code-badge">P0715</span><span class="code-title">Turbinendrehzahlsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0720/"><span class="code-badge">P0720</span><span class="code-title">Abtriebsdrehzahlsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0730/"><span class="code-badge">P0730</span><span class="code-title">Falsches Übersetzungsverhältnis</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0740/"><span class="code-badge">P0740</span><span class="code-title">Drehmomentwandler-Überbrückungskupplung – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0750/"><span class="code-badge">P0750</span><span class="code-title">Schaltmagnetventil A – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-<li><a href="/code/P0755/"><span class="code-badge">P0755</span><span class="code-title">Schaltmagnetventil B – Fehlfunktion</span><span class="urgency-dot medium" title="Mittel"></span></a></li>
-</ul>
+    <div class="categories"><a href="#cat-catalyst" class="cat-tag">Katalysator</a> <a href="#cat-fuel" class="cat-tag">Kraftstoffsystem</a> <a href="#cat-misfire" class="cat-tag">Zündaussetzer</a> <a href="#cat-evap" class="cat-tag">EVAP-System</a> <a href="#cat-sensor" class="cat-tag">Sensoren</a> <a href="#cat-egr" class="cat-tag">Abgasrückführung</a> <a href="#cat-throttle" class="cat-tag">Drosselklappe / Leerlauf</a> <a href="#cat-transmission" class="cat-tag">Getriebe</a> </div>
 
+    <h2 class="section-title">Häufig gesuchte OBD-II Codes</h2>
+    <ul class="code-list"><li><a href="/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0172/"><span class="code-badge">P0172</span><span class="code-title">Gemisch zu fett – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0505/"><span class="code-badge">P0505</span><span class="code-title">Leerlaufregelung – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0301/"><span class="code-badge">P0301</span><span class="code-title">Zündaussetzer Zylinder 1</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0302/"><span class="code-badge">P0302</span><span class="code-title">Zündaussetzer Zylinder 2</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0440/"><span class="code-badge">P0440</span><span class="code-title">EVAP-System Fehlfunktion</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0135/"><span class="code-badge">P0135</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0174/"><span class="code-badge">P0174</span><span class="code-title">Gemisch zu mager – Bank 2</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0430/"><span class="code-badge">P0430</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0700/"><span class="code-badge">P0700</span><span class="code-title">Getriebesteuerung – Fehlfunktion erkannt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0340/"><span class="code-badge">P0340</span><span class="code-title">Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0335/"><span class="code-badge">P0335</span><span class="code-title">Kurbelwellensensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0121/"><span class="code-badge">P0121</span><span class="code-title">Drosselklappensensor (TPS) – Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li></ul>
+    <h2 class="section-title" id="cat-catalyst">Katalysator</h2><ul class="code-list"><li><a href="/code/P0410/"><span class="code-badge">P0410</span><span class="code-title">Sekundärluftsystem – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0411/"><span class="code-badge">P0411</span><span class="code-title">Sekundärluftsystem – Durchfluss nicht korrekt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0412/"><span class="code-badge">P0412</span><span class="code-title">Sekundärluftventil – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0421/"><span class="code-badge">P0421</span><span class="code-title">Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0430/"><span class="code-badge">P0430</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-fuel">Kraftstoffsystem</h2><ul class="code-list"><li><a href="/code/P0170/"><span class="code-badge">P0170</span><span class="code-title">Kraftstofftrimmung Fehlfunktion – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0172/"><span class="code-badge">P0172</span><span class="code-title">Gemisch zu fett – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0174/"><span class="code-badge">P0174</span><span class="code-title">Gemisch zu mager – Bank 2</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0175/"><span class="code-badge">P0175</span><span class="code-title">Gemisch zu fett – Bank 2</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0190/"><span class="code-badge">P0190</span><span class="code-title">Kraftstoffdrucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0191/"><span class="code-badge">P0191</span><span class="code-title">Kraftstoffdrucksensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0192/"><span class="code-badge">P0192</span><span class="code-title">Kraftstoffdrucksensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0193/"><span class="code-badge">P0193</span><span class="code-title">Kraftstoffdrucksensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0201/"><span class="code-badge">P0201</span><span class="code-title">Einspritzdüse Zylinder 1 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0202/"><span class="code-badge">P0202</span><span class="code-title">Einspritzdüse Zylinder 2 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0203/"><span class="code-badge">P0203</span><span class="code-title">Einspritzdüse Zylinder 3 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0204/"><span class="code-badge">P0204</span><span class="code-title">Einspritzdüse Zylinder 4 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0205/"><span class="code-badge">P0205</span><span class="code-title">Einspritzdüse Zylinder 5 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0206/"><span class="code-badge">P0206</span><span class="code-title">Einspritzdüse Zylinder 6 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0230/"><span class="code-badge">P0230</span><span class="code-title">Kraftstoffpumpen-Relais – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0234/"><span class="code-badge">P0234</span><span class="code-title">Ladedruckregelung – Ladedruck zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0235/"><span class="code-badge">P0235</span><span class="code-title">Ladedrucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0251/"><span class="code-badge">P0251</span><span class="code-title">Einspritzpumpe – Regelabweichung (Diesel)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0261/"><span class="code-badge">P0261</span><span class="code-title">Einspritzdüse Zyl. 1 – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0262/"><span class="code-badge">P0262</span><span class="code-title">Einspritzdüse Zyl. 1 – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0299/"><span class="code-badge">P0299</span><span class="code-title">Ladedruckregelung – Ladedruck zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0380/"><span class="code-badge">P0380</span><span class="code-title">Glühkerzen-Steuerkreis – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0381/"><span class="code-badge">P0381</span><span class="code-title">Glühkerzen-Kontrollleuchte – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0627/"><span class="code-badge">P0627</span><span class="code-title">Kraftstoffpumpen-Steuerkreis – offen</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-misfire">Zündaussetzer</h2><ul class="code-list"><li><a href="/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0301/"><span class="code-badge">P0301</span><span class="code-title">Zündaussetzer Zylinder 1</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0302/"><span class="code-badge">P0302</span><span class="code-title">Zündaussetzer Zylinder 2</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0303/"><span class="code-badge">P0303</span><span class="code-title">Zündaussetzer Zylinder 3</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0304/"><span class="code-badge">P0304</span><span class="code-title">Zündaussetzer Zylinder 4</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0305/"><span class="code-badge">P0305</span><span class="code-title">Zündaussetzer Zylinder 5</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0306/"><span class="code-badge">P0306</span><span class="code-title">Zündaussetzer Zylinder 6</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0307/"><span class="code-badge">P0307</span><span class="code-title">Zündaussetzer Zylinder 7</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0308/"><span class="code-badge">P0308</span><span class="code-title">Zündaussetzer Zylinder 8</span><span class="urgency-dot high"></span></a></li><li><a href="/code/P0351/"><span class="code-badge">P0351</span><span class="code-title">Zündspule A – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0352/"><span class="code-badge">P0352</span><span class="code-title">Zündspule B – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0353/"><span class="code-badge">P0353</span><span class="code-title">Zündspule C – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0354/"><span class="code-badge">P0354</span><span class="code-title">Zündspule D – Steuerkreis</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-evap">EVAP-System</h2><ul class="code-list"><li><a href="/code/P0440/"><span class="code-badge">P0440</span><span class="code-title">EVAP-System Fehlfunktion</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0441/"><span class="code-badge">P0441</span><span class="code-title">EVAP-System – Spülstrom nicht korrekt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0443/"><span class="code-badge">P0443</span><span class="code-title">EVAP-Spülventil Steuerkreis Fehlfunktion</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0446/"><span class="code-badge">P0446</span><span class="code-title">EVAP-Entlüftungsventil Steuerkreis Fehlfunktion</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0456/"><span class="code-badge">P0456</span><span class="code-title">EVAP-System – sehr kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/code/P0496/"><span class="code-badge">P0496</span><span class="code-title">EVAP-System – Spülstrom zu hoch (Motor aus)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0497/"><span class="code-badge">P0497</span><span class="code-title">EVAP-System – Spülstrom zu niedrig</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-sensor">Sensoren</h2><ul class="code-list"><li><a href="/code/P0010/"><span class="code-badge">P0010</span><span class="code-title">Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0011/"><span class="code-badge">P0011</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0012/"><span class="code-badge">P0012</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0013/"><span class="code-badge">P0013</span><span class="code-title">Nockenwellenverstellung (Auslass) Bank 1 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0014/"><span class="code-badge">P0014</span><span class="code-title">Nockenwellenverstellung (Auslass) Bank 1 – Position zu weit vorgestellt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0016/"><span class="code-badge">P0016</span><span class="code-title">Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor A</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0017/"><span class="code-badge">P0017</span><span class="code-title">Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor B</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0020/"><span class="code-badge">P0020</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0021/"><span class="code-badge">P0021</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – zu weit vorgestellt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0022/"><span class="code-badge">P0022</span><span class="code-title">Nockenwellenverstellung (Einlass) Bank 2 – zu weit zurückgestellt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0030/"><span class="code-badge">P0030</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0031/"><span class="code-badge">P0031</span><span class="code-title">Lambda-Sonde B1S1 Heizkreis – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0032/"><span class="code-badge">P0032</span><span class="code-title">Lambda-Sonde B1S1 Heizkreis – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0036/"><span class="code-badge">P0036</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Steuerkreis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0037/"><span class="code-badge">P0037</span><span class="code-title">Lambda-Sonde B1S2 Heizkreis – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0038/"><span class="code-badge">P0038</span><span class="code-title">Lambda-Sonde B1S2 Heizkreis – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0068/"><span class="code-badge">P0068</span><span class="code-title">Drosselklappe/MAP-Sensor – Korrelation</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0100/"><span class="code-badge">P0100</span><span class="code-title">Luftmassenmesser (LMM) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0102/"><span class="code-badge">P0102</span><span class="code-title">Luftmassenmesser – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0103/"><span class="code-badge">P0103</span><span class="code-title">Luftmassenmesser – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0105/"><span class="code-badge">P0105</span><span class="code-title">MAP-Sensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0106/"><span class="code-badge">P0106</span><span class="code-title">MAP-Sensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0107/"><span class="code-badge">P0107</span><span class="code-title">MAP-Sensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0108/"><span class="code-badge">P0108</span><span class="code-title">MAP-Sensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0110/"><span class="code-badge">P0110</span><span class="code-title">Ansauglufttemperatursensor (IAT) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0111/"><span class="code-badge">P0111</span><span class="code-title">Ansauglufttemperatursensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0112/"><span class="code-badge">P0112</span><span class="code-title">Ansauglufttemperatursensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0113/"><span class="code-badge">P0113</span><span class="code-title">Ansauglufttemperatursensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0115/"><span class="code-badge">P0115</span><span class="code-title">Kühlmitteltemperatursensor (ECT) – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0116/"><span class="code-badge">P0116</span><span class="code-title">Kühlmitteltemperatursensor – Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0117/"><span class="code-badge">P0117</span><span class="code-title">Kühlmitteltemperatursensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0118/"><span class="code-badge">P0118</span><span class="code-title">Kühlmitteltemperatursensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0125/"><span class="code-badge">P0125</span><span class="code-title">Kühlmitteltemperatur unzureichend für Gemischregelung</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0130/"><span class="code-badge">P0130</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0131/"><span class="code-badge">P0131</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Spannung zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0132/"><span class="code-badge">P0132</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Spannung zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0133/"><span class="code-badge">P0133</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – langsame Reaktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0134/"><span class="code-badge">P0134</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – keine Aktivität</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0135/"><span class="code-badge">P0135</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0136/"><span class="code-badge">P0136</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0137/"><span class="code-badge">P0137</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Spannung zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0138/"><span class="code-badge">P0138</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Spannung zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0141/"><span class="code-badge">P0141</span><span class="code-title">Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0155/"><span class="code-badge">P0155</span><span class="code-title">Lambda-Sonde Bank 2 Sensor 1 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0161/"><span class="code-badge">P0161</span><span class="code-title">Lambda-Sonde Bank 2 Sensor 2 – Heizkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0325/"><span class="code-badge">P0325</span><span class="code-title">Klopfsensor 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0326/"><span class="code-badge">P0326</span><span class="code-title">Klopfsensor 1 – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0327/"><span class="code-badge">P0327</span><span class="code-title">Klopfsensor 1 – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0328/"><span class="code-badge">P0328</span><span class="code-title">Klopfsensor 1 – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0335/"><span class="code-badge">P0335</span><span class="code-title">Kurbelwellensensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0336/"><span class="code-badge">P0336</span><span class="code-title">Kurbelwellensensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0340/"><span class="code-badge">P0340</span><span class="code-title">Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0341/"><span class="code-badge">P0341</span><span class="code-title">Nockenwellensensor Bank 1 – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0345/"><span class="code-badge">P0345</span><span class="code-title">Nockenwellensensor Bank 2 – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0460/"><span class="code-badge">P0460</span><span class="code-title">Kraftstoffstandsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0461/"><span class="code-badge">P0461</span><span class="code-title">Kraftstoffstandsensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0462/"><span class="code-badge">P0462</span><span class="code-title">Kraftstoffstandsensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0463/"><span class="code-badge">P0463</span><span class="code-title">Kraftstoffstandsensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0480/"><span class="code-badge">P0480</span><span class="code-title">Kühlerlüfter 1 – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0481/"><span class="code-badge">P0481</span><span class="code-title">Kühlerlüfter 2 – Steuerkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0500/"><span class="code-badge">P0500</span><span class="code-title">Geschwindigkeitssensor – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0501/"><span class="code-badge">P0501</span><span class="code-title">Geschwindigkeitssensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0502/"><span class="code-badge">P0502</span><span class="code-title">Geschwindigkeitssensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0503/"><span class="code-badge">P0503</span><span class="code-title">Geschwindigkeitssensor – Signal intermittierend</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0530/"><span class="code-badge">P0530</span><span class="code-title">Klimakompressor-Drucksensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0531/"><span class="code-badge">P0531</span><span class="code-title">Klimakompressor-Drucksensor – Signal außerhalb Bereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0545/"><span class="code-badge">P0545</span><span class="code-title">Abgastemperatursensor Bank 1 Sensor 1 – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0546/"><span class="code-badge">P0546</span><span class="code-title">Abgastemperatursensor Bank 1 Sensor 1 – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0562/"><span class="code-badge">P0562</span><span class="code-title">Systemspannung zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0563/"><span class="code-badge">P0563</span><span class="code-title">Systemspannung zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0597/"><span class="code-badge">P0597</span><span class="code-title">Thermostat-Heizelement – Steuerkreis offen</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0600/"><span class="code-badge">P0600</span><span class="code-title">CAN-Bus – Serieller Kommunikationsfehler</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0601/"><span class="code-badge">P0601</span><span class="code-title">Interner Steuergerät-Speicherfehler (Prüfsumme)</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0602/"><span class="code-badge">P0602</span><span class="code-title">Steuergerät – Programmierfehler</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-egr">Abgasrückführung</h2><ul class="code-list"><li><a href="/code/P0400/"><span class="code-badge">P0400</span><span class="code-title">AGR-System – Durchfluss Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0402/"><span class="code-badge">P0402</span><span class="code-title">AGR-System – Durchfluss zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0403/"><span class="code-badge">P0403</span><span class="code-title">AGR-Ventil Steuerkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0404/"><span class="code-badge">P0404</span><span class="code-title">AGR-Ventil – Bereich/Leistung außerhalb Spezifikation</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0405/"><span class="code-badge">P0405</span><span class="code-title">AGR-Positionssensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-throttle">Drosselklappe / Leerlauf</h2><ul class="code-list"><li><a href="/code/P0121/"><span class="code-badge">P0121</span><span class="code-title">Drosselklappensensor (TPS) – Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0122/"><span class="code-badge">P0122</span><span class="code-title">Drosselklappensensor – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0123/"><span class="code-badge">P0123</span><span class="code-title">Drosselklappensensor – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0222/"><span class="code-badge">P0222</span><span class="code-title">Drosselklappensensor 2 – Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0223/"><span class="code-badge">P0223</span><span class="code-title">Drosselklappensensor 2 – Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0505/"><span class="code-badge">P0505</span><span class="code-title">Leerlaufregelung – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0506/"><span class="code-badge">P0506</span><span class="code-title">Leerlaufdrehzahl zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0507/"><span class="code-badge">P0507</span><span class="code-title">Leerlaufdrehzahl zu hoch</span><span class="urgency-dot medium"></span></a></li></ul><h2 class="section-title" id="cat-transmission">Getriebe</h2><ul class="code-list"><li><a href="/code/P0700/"><span class="code-badge">P0700</span><span class="code-title">Getriebesteuerung – Fehlfunktion erkannt</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0715/"><span class="code-badge">P0715</span><span class="code-title">Turbinendrehzahlsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0720/"><span class="code-badge">P0720</span><span class="code-title">Abtriebsdrehzahlsensor – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0730/"><span class="code-badge">P0730</span><span class="code-title">Falsches Übersetzungsverhältnis</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0740/"><span class="code-badge">P0740</span><span class="code-title">Drehmomentwandler-Überbrückungskupplung – Schaltkreis Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0750/"><span class="code-badge">P0750</span><span class="code-title">Schaltmagnetventil A – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/code/P0755/"><span class="code-badge">P0755</span><span class="code-title">Schaltmagnetventil B – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li></ul>
 
-</div>
+    <div id="bmw-section" class="section-divider">
+      <h2 style="font-size:1.4rem;margin-bottom:0.5rem">BMW Fehlercodes</h2>
+      <p style="color:var(--text-muted);margin-bottom:1rem">Herstellerspezifische BMW-Codes – nach Steuergerät sortiert.</p>
+      <div class="categories"><a href="#bmw-DME" class="cat-tag">DME – Motor (Benzin)</a> <a href="#bmw-DDE" class="cat-tag">DDE – Motor (Diesel)</a> <a href="#bmw-EGS" class="cat-tag">EGS – Getriebe</a> <a href="#bmw-ACSM" class="cat-tag">ACSM – Airbag/Sicherheit</a> <a href="#bmw-DSC" class="cat-tag">DSC – Stabilitätskontrolle</a> <a href="#bmw-FRM" class="cat-tag">FRM – Beleuchtung</a> <a href="#bmw-CAS" class="cat-tag">CAS – Zugang/Start</a> <a href="#bmw-KOMBI" class="cat-tag">KOMBI – Instrumente</a> </div>
+      <h3 class="section-title" id="bmw-DME">DME – Motor (Benzin)</h3><ul class="code-list"><li><a href="/bmw/290900/"><span class="code-badge">290900</span><span class="code-title">Luftsystem, Luft- zu AGR-Massenstrom Plausibilität</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/29CD/"><span class="code-badge">29CD</span><span class="code-title">Gemischregelung, Gemisch zu fett</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/29D0/"><span class="code-badge">29D0</span><span class="code-title">Gemischregelung, Gemisch zu mager</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/29E0/"><span class="code-badge">29E0</span><span class="code-title">Lambda-Regelung, Grenzwert überschritten Bank 1</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/2A69/"><span class="code-badge">2A69</span><span class="code-title">Vanos Einlass, Abweichung</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2A6C/"><span class="code-badge">2A6C</span><span class="code-title">Vanos Einlass, Stellzeit zu lang</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2A6F/"><span class="code-badge">2A6F</span><span class="code-title">Vanos Auslass, Abweichung</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2A70/"><span class="code-badge">2A70</span><span class="code-title">Drosselklappensteller, Ansteuerung</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/2A7A/"><span class="code-badge">2A7A</span><span class="code-title">Ladedruckregelung, Ladedruck zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2AAF/"><span class="code-badge">2AAF</span><span class="code-title">Hochdruck-Kraftstoffpumpe, Druck zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C00/"><span class="code-badge">2C00</span><span class="code-title">Zündaussetzer, mehrere Zylinder</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C01/"><span class="code-badge">2C01</span><span class="code-title">Zündaussetzer Zylinder 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C02/"><span class="code-badge">2C02</span><span class="code-title">Zündaussetzer Zylinder 2</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C03/"><span class="code-badge">2C03</span><span class="code-title">Zündaussetzer Zylinder 3</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C04/"><span class="code-badge">2C04</span><span class="code-title">Zündaussetzer Zylinder 4</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C05/"><span class="code-badge">2C05</span><span class="code-title">Zündaussetzer Zylinder 5</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2C06/"><span class="code-badge">2C06</span><span class="code-title">Zündaussetzer Zylinder 6</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2E81/"><span class="code-badge">2E81</span><span class="code-title">Kühlmitteltemperatursensor, Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2E82/"><span class="code-badge">2E82</span><span class="code-title">Kühlmitteltemperatursensor, Signal zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2E83/"><span class="code-badge">2E83</span><span class="code-title">Kühlmitteltemperatursensor, Signal zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2EAE/"><span class="code-badge">2EAE</span><span class="code-title">Elektrische Kühlmittelpumpe, Ansteuerung</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/2EF5/"><span class="code-badge">2EF5</span><span class="code-title">Kennfeldthermostat, Ansteuerung</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2FBE/"><span class="code-badge">2FBE</span><span class="code-title">Ventiltronic, Stellmotor Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2FBF/"><span class="code-badge">2FBF</span><span class="code-title">Ventiltronic, Exzenterwelle Position</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/2FC0/"><span class="code-badge">2FC0</span><span class="code-title">Ventiltronic, Referenzierung fehlgeschlagen</span><span class="urgency-dot medium"></span></a></li></ul><h3 class="section-title" id="bmw-DDE">DDE – Motor (Diesel)</h3><ul class="code-list"><li><a href="/bmw/480A/"><span class="code-badge">480A</span><span class="code-title">AGR-Ventil, Ansteuerung</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/4810/"><span class="code-badge">4810</span><span class="code-title">Dieselpartikelfilter, Differenzdruck zu hoch</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/4811/"><span class="code-badge">4811</span><span class="code-title">Dieselpartikelfilter, Regeneration nicht möglich</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/4812/"><span class="code-badge">4812</span><span class="code-title">DPF Differenzdrucksensor, Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/4813/"><span class="code-badge">4813</span><span class="code-title">Abgastemperatursensor vor DPF, Signal nicht plausibel</span><span class="urgency-dot medium"></span></a></li></ul><h3 class="section-title" id="bmw-EGS">EGS – Getriebe</h3><ul class="code-list"><li><a href="/bmw/5088/"><span class="code-badge">5088</span><span class="code-title">Getriebe, Übersetzungsverhältnis nicht plausibel</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/5089/"><span class="code-badge">5089</span><span class="code-title">Drehmomentwandler-Schlupf zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/508A/"><span class="code-badge">508A</span><span class="code-title">Getriebe, Schaltvorgang fehlerhaft</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/508B/"><span class="code-badge">508B</span><span class="code-title">Getriebeöl-Temperatur zu hoch</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/5098/"><span class="code-badge">5098</span><span class="code-title">Wandlerüberbrückung, Fehlfunktion</span><span class="urgency-dot medium"></span></a></li></ul><h3 class="section-title" id="bmw-ACSM">ACSM – Airbag/Sicherheit</h3><ul class="code-list"><li><a href="/bmw/9381/"><span class="code-badge">9381</span><span class="code-title">Fahrer-Airbag, Auslösekreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/9382/"><span class="code-badge">9382</span><span class="code-title">Beifahrer-Airbag, Auslösekreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/93A1/"><span class="code-badge">93A1</span><span class="code-title">Seitenairbag links, Auslösekreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/93A2/"><span class="code-badge">93A2</span><span class="code-title">Seitenairbag rechts, Auslösekreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/93B2/"><span class="code-badge">93B2</span><span class="code-title">Sicherheitsbatterieklemme, Auslösekreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/93C5/"><span class="code-badge">93C5</span><span class="code-title">Gurtstraffer Fahrer, Auslösekreis</span><span class="urgency-dot high"></span></a></li></ul><h3 class="section-title" id="bmw-DSC">DSC – Stabilitätskontrolle</h3><ul class="code-list"><li><a href="/bmw/5E10/"><span class="code-badge">5E10</span><span class="code-title">DSC-Steuergerät, interne Fehlfunktion</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/5E20/"><span class="code-badge">5E20</span><span class="code-title">Raddrehzahlsensor vorne links, Signal</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/5E21/"><span class="code-badge">5E21</span><span class="code-title">Raddrehzahlsensor vorne rechts, Signal</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/5E22/"><span class="code-badge">5E22</span><span class="code-title">Raddrehzahlsensor hinten links, Signal</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/5E23/"><span class="code-badge">5E23</span><span class="code-title">Raddrehzahlsensor hinten rechts, Signal</span><span class="urgency-dot high"></span></a></li></ul><h3 class="section-title" id="bmw-FRM">FRM – Beleuchtung</h3><ul class="code-list"><li><a href="/bmw/A0A0/"><span class="code-badge">A0A0</span><span class="code-title">FRM interne Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/A0B2/"><span class="code-badge">A0B2</span><span class="code-title">Abblendlicht links, Kurzschluss oder offener Stromkreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/A0B3/"><span class="code-badge">A0B3</span><span class="code-title">Abblendlicht rechts, Kurzschluss oder offener Stromkreis</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/A0B4/"><span class="code-badge">A0B4</span><span class="code-title">Rücklicht links, Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/A0B5/"><span class="code-badge">A0B5</span><span class="code-title">Rücklicht rechts, Fehlfunktion</span><span class="urgency-dot medium"></span></a></li></ul><h3 class="section-title" id="bmw-CAS">CAS – Zugang/Start</h3><ul class="code-list"><li><a href="/bmw/A251/"><span class="code-badge">A251</span><span class="code-title">EWS-Abgleich, Schlüssel nicht angelernt</span><span class="urgency-dot high"></span></a></li><li><a href="/bmw/A252/"><span class="code-badge">A252</span><span class="code-title">Zweiter Schlüssel nicht angelernt</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/A253/"><span class="code-badge">A253</span><span class="code-title">Lenkradschloss, Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/A254/"><span class="code-badge">A254</span><span class="code-title">Startfreigabe, Timeout</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/A255/"><span class="code-badge">A255</span><span class="code-title">CAS Kommunikation, Fehler</span><span class="urgency-dot medium"></span></a></li></ul><h3 class="section-title" id="bmw-KOMBI">KOMBI – Instrumente</h3><ul class="code-list"><li><a href="/bmw/9CA1/"><span class="code-badge">9CA1</span><span class="code-title">Verbrauchsanzeige, Plausibilitätsfehler</span><span class="urgency-dot low"></span></a></li><li><a href="/bmw/9CA2/"><span class="code-badge">9CA2</span><span class="code-title">Kühlmitteltemperaturanzeige, Fehler</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/9CA3/"><span class="code-badge">9CA3</span><span class="code-title">Drehzahlmesser, Fehler</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/9CB0/"><span class="code-badge">9CB0</span><span class="code-title">CAN-Bus Empfang, Fehler</span><span class="urgency-dot medium"></span></a></li><li><a href="/bmw/9CB1/"><span class="code-badge">9CB1</span><span class="code-title">Kombiinstrument, interne Fehlfunktion</span><span class="urgency-dot medium"></span></a></li></ul>
+    </div>
+  </div>
 </main>
-<footer><div class="disclaimer"><p><strong>Haftungsausschluss:</strong> Diese Website dient ausschließlich der allgemeinen Information. Sie stellt keine Reparatur-, Rechts- oder Kaufberatung dar. Für Diagnose und Reparatur wenden Sie sich an eine qualifizierte Kfz-Werkstatt. Alle Angaben ohne Gewähr.</p><p style="margin-top:0.5rem">&copy; 2026 OBD Fehlercode Finder</p></div></footer>
+
+<footer>
+  <div class="container">
+    <div class="disclaimer">
+      <p><strong>Haftungsausschluss:</strong> Diese Website dient ausschließlich der allgemeinen Information. Sie stellt keine Reparatur-, Rechts- oder Kaufberatung dar. Für Diagnose und Reparatur wenden Sie sich an eine qualifizierte Kfz-Werkstatt. Alle Angaben ohne Gewähr.</p>
+      <p style="margin-top:0.75rem">
+        <a href="/datenschutz/">Datenschutz</a> ·
+        <a href="/impressum/">Impressum</a>
+      </p>
+      <p style="margin-top:0.75rem">&copy; 2026 OBD Fehlercode Finder</p>
+    </div>
+  </div>
+</footer>
 
 <script>
-// Client-side search
 (function(){
-  var data=[{"c":"P0010","t":"Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis"},{"c":"P0011","t":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt"},{"c":"P0012","t":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt"},{"c":"P0013","t":"Nockenwellenverstellung (Auslass) Bank 1 – Steuerkreis"},{"c":"P0014","t":"Nockenwellenverstellung (Auslass) Bank 1 – Position zu weit vorgestellt"},{"c":"P0016","t":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor A"},{"c":"P0017","t":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor B"},{"c":"P0020","t":"Nockenwellenverstellung (Einlass) Bank 2 – Steuerkreis"},{"c":"P0021","t":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit vorgestellt"},{"c":"P0022","t":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit zurückgestellt"},{"c":"P0030","t":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Steuerkreis"},{"c":"P0031","t":"Lambda-Sonde B1S1 Heizkreis – Signal zu niedrig"},{"c":"P0032","t":"Lambda-Sonde B1S1 Heizkreis – Signal zu hoch"},{"c":"P0036","t":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Steuerkreis"},{"c":"P0037","t":"Lambda-Sonde B1S2 Heizkreis – Signal zu niedrig"},{"c":"P0038","t":"Lambda-Sonde B1S2 Heizkreis – Signal zu hoch"},{"c":"P0068","t":"Drosselklappe/MAP-Sensor – Korrelation"},{"c":"P0100","t":"Luftmassenmesser (LMM) – Schaltkreis Fehlfunktion"},{"c":"P0101","t":"Luftmassenmesser (LMM) – Signal außerhalb des Bereichs"},{"c":"P0102","t":"Luftmassenmesser – Signal zu niedrig"},{"c":"P0103","t":"Luftmassenmesser – Signal zu hoch"},{"c":"P0105","t":"MAP-Sensor – Schaltkreis Fehlfunktion"},{"c":"P0106","t":"MAP-Sensor – Signal außerhalb Bereich"},{"c":"P0107","t":"MAP-Sensor – Signal zu niedrig"},{"c":"P0108","t":"MAP-Sensor – Signal zu hoch"},{"c":"P0110","t":"Ansauglufttemperatursensor (IAT) – Schaltkreis Fehlfunktion"},{"c":"P0111","t":"Ansauglufttemperatursensor – Signal außerhalb Bereich"},{"c":"P0112","t":"Ansauglufttemperatursensor – Signal zu niedrig"},{"c":"P0113","t":"Ansauglufttemperatursensor – Signal zu hoch"},{"c":"P0115","t":"Kühlmitteltemperatursensor (ECT) – Schaltkreis Fehlfunktion"},{"c":"P0116","t":"Kühlmitteltemperatursensor – Signal nicht plausibel"},{"c":"P0117","t":"Kühlmitteltemperatursensor – Signal zu niedrig"},{"c":"P0118","t":"Kühlmitteltemperatursensor – Signal zu hoch"},{"c":"P0121","t":"Drosselklappensensor (TPS) – Signal nicht plausibel"},{"c":"P0122","t":"Drosselklappensensor – Signal zu niedrig"},{"c":"P0123","t":"Drosselklappensensor – Signal zu hoch"},{"c":"P0125","t":"Kühlmitteltemperatur unzureichend für Gemischregelung"},{"c":"P0128","t":"Kühlmitteltemperatur unter Thermostat-Regulierbereich"},{"c":"P0130","t":"Lambda-Sonde Bank 1 Sensor 1 – Schaltkreis Fehlfunktion"},{"c":"P0131","t":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu niedrig"},{"c":"P0132","t":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu hoch"},{"c":"P0133","t":"Lambda-Sonde Bank 1 Sensor 1 – langsame Reaktion"},{"c":"P0134","t":"Lambda-Sonde Bank 1 Sensor 1 – keine Aktivität"},{"c":"P0135","t":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion"},{"c":"P0136","t":"Lambda-Sonde Bank 1 Sensor 2 – Schaltkreis Fehlfunktion"},{"c":"P0137","t":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu niedrig"},{"c":"P0138","t":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu hoch"},{"c":"P0141","t":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Fehlfunktion"},{"c":"P0155","t":"Lambda-Sonde Bank 2 Sensor 1 – Heizkreis Fehlfunktion"},{"c":"P0161","t":"Lambda-Sonde Bank 2 Sensor 2 – Heizkreis Fehlfunktion"},{"c":"P0170","t":"Kraftstofftrimmung Fehlfunktion – Bank 1"},{"c":"P0171","t":"Gemisch zu mager – Bank 1"},{"c":"P0172","t":"Gemisch zu fett – Bank 1"},{"c":"P0174","t":"Gemisch zu mager – Bank 2"},{"c":"P0175","t":"Gemisch zu fett – Bank 2"},{"c":"P0190","t":"Kraftstoffdrucksensor – Schaltkreis Fehlfunktion"},{"c":"P0191","t":"Kraftstoffdrucksensor – Signal außerhalb Bereich"},{"c":"P0192","t":"Kraftstoffdrucksensor – Signal zu niedrig"},{"c":"P0193","t":"Kraftstoffdrucksensor – Signal zu hoch"},{"c":"P0201","t":"Einspritzdüse Zylinder 1 – Steuerkreis"},{"c":"P0202","t":"Einspritzdüse Zylinder 2 – Steuerkreis"},{"c":"P0203","t":"Einspritzdüse Zylinder 3 – Steuerkreis"},{"c":"P0204","t":"Einspritzdüse Zylinder 4 – Steuerkreis"},{"c":"P0205","t":"Einspritzdüse Zylinder 5 – Steuerkreis"},{"c":"P0206","t":"Einspritzdüse Zylinder 6 – Steuerkreis"},{"c":"P0222","t":"Drosselklappensensor 2 – Signal zu niedrig"},{"c":"P0223","t":"Drosselklappensensor 2 – Signal zu hoch"},{"c":"P0230","t":"Kraftstoffpumpen-Relais – Steuerkreis"},{"c":"P0234","t":"Ladedruckregelung – Ladedruck zu hoch"},{"c":"P0235","t":"Ladedrucksensor – Schaltkreis Fehlfunktion"},{"c":"P0251","t":"Einspritzpumpe – Regelabweichung (Diesel)"},{"c":"P0261","t":"Einspritzdüse Zyl. 1 – Signal zu niedrig"},{"c":"P0262","t":"Einspritzdüse Zyl. 1 – Signal zu hoch"},{"c":"P0299","t":"Ladedruckregelung – Ladedruck zu niedrig"},{"c":"P0300","t":"Zufällige/multiple Zündaussetzer erkannt"},{"c":"P0301","t":"Zündaussetzer Zylinder 1"},{"c":"P0302","t":"Zündaussetzer Zylinder 2"},{"c":"P0303","t":"Zündaussetzer Zylinder 3"},{"c":"P0304","t":"Zündaussetzer Zylinder 4"},{"c":"P0305","t":"Zündaussetzer Zylinder 5"},{"c":"P0306","t":"Zündaussetzer Zylinder 6"},{"c":"P0307","t":"Zündaussetzer Zylinder 7"},{"c":"P0308","t":"Zündaussetzer Zylinder 8"},{"c":"P0325","t":"Klopfsensor 1 – Schaltkreis Fehlfunktion"},{"c":"P0326","t":"Klopfsensor 1 – Signal außerhalb Bereich"},{"c":"P0327","t":"Klopfsensor 1 – Signal zu niedrig"},{"c":"P0328","t":"Klopfsensor 1 – Signal zu hoch"},{"c":"P0335","t":"Kurbelwellensensor – Schaltkreis Fehlfunktion"},{"c":"P0336","t":"Kurbelwellensensor – Signal außerhalb Bereich"},{"c":"P0340","t":"Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion"},{"c":"P0341","t":"Nockenwellensensor Bank 1 – Signal außerhalb Bereich"},{"c":"P0345","t":"Nockenwellensensor Bank 2 – Schaltkreis Fehlfunktion"},{"c":"P0351","t":"Zündspule A – Steuerkreis"},{"c":"P0352","t":"Zündspule B – Steuerkreis"},{"c":"P0353","t":"Zündspule C – Steuerkreis"},{"c":"P0354","t":"Zündspule D – Steuerkreis"},{"c":"P0380","t":"Glühkerzen-Steuerkreis – Fehlfunktion"},{"c":"P0381","t":"Glühkerzen-Kontrollleuchte – Steuerkreis Fehlfunktion"},{"c":"P0400","t":"AGR-System – Durchfluss Fehlfunktion"},{"c":"P0401","t":"AGR-System – Durchfluss unzureichend"},{"c":"P0402","t":"AGR-System – Durchfluss zu hoch"},{"c":"P0403","t":"AGR-Ventil Steuerkreis Fehlfunktion"},{"c":"P0404","t":"AGR-Ventil – Bereich/Leistung außerhalb Spezifikation"},{"c":"P0405","t":"AGR-Positionssensor – Signal zu niedrig"},{"c":"P0410","t":"Sekundärluftsystem – Fehlfunktion"},{"c":"P0411","t":"Sekundärluftsystem – Durchfluss nicht korrekt"},{"c":"P0412","t":"Sekundärluftventil – Steuerkreis Fehlfunktion"},{"c":"P0420","t":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)"},{"c":"P0421","t":"Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)"},{"c":"P0430","t":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)"},{"c":"P0440","t":"EVAP-System Fehlfunktion"},{"c":"P0441","t":"EVAP-System – Spülstrom nicht korrekt"},{"c":"P0442","t":"EVAP-System – kleine Leckage erkannt"},{"c":"P0443","t":"EVAP-Spülventil Steuerkreis Fehlfunktion"},{"c":"P0446","t":"EVAP-Entlüftungsventil Steuerkreis Fehlfunktion"},{"c":"P0455","t":"EVAP-System – große Leckage erkannt"},{"c":"P0456","t":"EVAP-System – sehr kleine Leckage erkannt"},{"c":"P0460","t":"Kraftstoffstandsensor – Schaltkreis Fehlfunktion"},{"c":"P0461","t":"Kraftstoffstandsensor – Signal außerhalb Bereich"},{"c":"P0462","t":"Kraftstoffstandsensor – Signal zu niedrig"},{"c":"P0463","t":"Kraftstoffstandsensor – Signal zu hoch"},{"c":"P0480","t":"Kühlerlüfter 1 – Steuerkreis Fehlfunktion"},{"c":"P0481","t":"Kühlerlüfter 2 – Steuerkreis Fehlfunktion"},{"c":"P0496","t":"EVAP-System – Spülstrom zu hoch (Motor aus)"},{"c":"P0497","t":"EVAP-System – Spülstrom zu niedrig"},{"c":"P0500","t":"Geschwindigkeitssensor – Fehlfunktion"},{"c":"P0501","t":"Geschwindigkeitssensor – Signal außerhalb Bereich"},{"c":"P0502","t":"Geschwindigkeitssensor – Signal zu niedrig"},{"c":"P0503","t":"Geschwindigkeitssensor – Signal intermittierend"},{"c":"P0505","t":"Leerlaufregelung – Fehlfunktion"},{"c":"P0506","t":"Leerlaufdrehzahl zu niedrig"},{"c":"P0507","t":"Leerlaufdrehzahl zu hoch"},{"c":"P0530","t":"Klimakompressor-Drucksensor – Schaltkreis Fehlfunktion"},{"c":"P0531","t":"Klimakompressor-Drucksensor – Signal außerhalb Bereich"},{"c":"P0545","t":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu niedrig"},{"c":"P0546","t":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu hoch"},{"c":"P0562","t":"Systemspannung zu niedrig"},{"c":"P0563","t":"Systemspannung zu hoch"},{"c":"P0597","t":"Thermostat-Heizelement – Steuerkreis offen"},{"c":"P0600","t":"CAN-Bus – Serieller Kommunikationsfehler"},{"c":"P0601","t":"Interner Steuergerät-Speicherfehler (Prüfsumme)"},{"c":"P0602","t":"Steuergerät – Programmierfehler"},{"c":"P0627","t":"Kraftstoffpumpen-Steuerkreis – offen"},{"c":"P0700","t":"Getriebesteuerung – Fehlfunktion erkannt"},{"c":"P0715","t":"Turbinendrehzahlsensor – Schaltkreis Fehlfunktion"},{"c":"P0720","t":"Abtriebsdrehzahlsensor – Schaltkreis Fehlfunktion"},{"c":"P0730","t":"Falsches Übersetzungsverhältnis"},{"c":"P0740","t":"Drehmomentwandler-Überbrückungskupplung – Schaltkreis Fehlfunktion"},{"c":"P0750","t":"Schaltmagnetventil A – Fehlfunktion"},{"c":"P0755","t":"Schaltmagnetventil B – Fehlfunktion"}];
-  var input=document.getElementById("search");
-  var box=document.getElementById("results");
+  var data = [{"c":"P0010","t":"Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis","u":"/code/P0010/"},{"c":"P0011","t":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt","u":"/code/P0011/"},{"c":"P0012","t":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt","u":"/code/P0012/"},{"c":"P0013","t":"Nockenwellenverstellung (Auslass) Bank 1 – Steuerkreis","u":"/code/P0013/"},{"c":"P0014","t":"Nockenwellenverstellung (Auslass) Bank 1 – Position zu weit vorgestellt","u":"/code/P0014/"},{"c":"P0016","t":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor A","u":"/code/P0016/"},{"c":"P0017","t":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor B","u":"/code/P0017/"},{"c":"P0020","t":"Nockenwellenverstellung (Einlass) Bank 2 – Steuerkreis","u":"/code/P0020/"},{"c":"P0021","t":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit vorgestellt","u":"/code/P0021/"},{"c":"P0022","t":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit zurückgestellt","u":"/code/P0022/"},{"c":"P0030","t":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Steuerkreis","u":"/code/P0030/"},{"c":"P0031","t":"Lambda-Sonde B1S1 Heizkreis – Signal zu niedrig","u":"/code/P0031/"},{"c":"P0032","t":"Lambda-Sonde B1S1 Heizkreis – Signal zu hoch","u":"/code/P0032/"},{"c":"P0036","t":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Steuerkreis","u":"/code/P0036/"},{"c":"P0037","t":"Lambda-Sonde B1S2 Heizkreis – Signal zu niedrig","u":"/code/P0037/"},{"c":"P0038","t":"Lambda-Sonde B1S2 Heizkreis – Signal zu hoch","u":"/code/P0038/"},{"c":"P0068","t":"Drosselklappe/MAP-Sensor – Korrelation","u":"/code/P0068/"},{"c":"P0100","t":"Luftmassenmesser (LMM) – Schaltkreis Fehlfunktion","u":"/code/P0100/"},{"c":"P0101","t":"Luftmassenmesser (LMM) – Signal außerhalb des Bereichs","u":"/code/P0101/"},{"c":"P0102","t":"Luftmassenmesser – Signal zu niedrig","u":"/code/P0102/"},{"c":"P0103","t":"Luftmassenmesser – Signal zu hoch","u":"/code/P0103/"},{"c":"P0105","t":"MAP-Sensor – Schaltkreis Fehlfunktion","u":"/code/P0105/"},{"c":"P0106","t":"MAP-Sensor – Signal außerhalb Bereich","u":"/code/P0106/"},{"c":"P0107","t":"MAP-Sensor – Signal zu niedrig","u":"/code/P0107/"},{"c":"P0108","t":"MAP-Sensor – Signal zu hoch","u":"/code/P0108/"},{"c":"P0110","t":"Ansauglufttemperatursensor (IAT) – Schaltkreis Fehlfunktion","u":"/code/P0110/"},{"c":"P0111","t":"Ansauglufttemperatursensor – Signal außerhalb Bereich","u":"/code/P0111/"},{"c":"P0112","t":"Ansauglufttemperatursensor – Signal zu niedrig","u":"/code/P0112/"},{"c":"P0113","t":"Ansauglufttemperatursensor – Signal zu hoch","u":"/code/P0113/"},{"c":"P0115","t":"Kühlmitteltemperatursensor (ECT) – Schaltkreis Fehlfunktion","u":"/code/P0115/"},{"c":"P0116","t":"Kühlmitteltemperatursensor – Signal nicht plausibel","u":"/code/P0116/"},{"c":"P0117","t":"Kühlmitteltemperatursensor – Signal zu niedrig","u":"/code/P0117/"},{"c":"P0118","t":"Kühlmitteltemperatursensor – Signal zu hoch","u":"/code/P0118/"},{"c":"P0121","t":"Drosselklappensensor (TPS) – Signal nicht plausibel","u":"/code/P0121/"},{"c":"P0122","t":"Drosselklappensensor – Signal zu niedrig","u":"/code/P0122/"},{"c":"P0123","t":"Drosselklappensensor – Signal zu hoch","u":"/code/P0123/"},{"c":"P0125","t":"Kühlmitteltemperatur unzureichend für Gemischregelung","u":"/code/P0125/"},{"c":"P0128","t":"Kühlmitteltemperatur unter Thermostat-Regulierbereich","u":"/code/P0128/"},{"c":"P0130","t":"Lambda-Sonde Bank 1 Sensor 1 – Schaltkreis Fehlfunktion","u":"/code/P0130/"},{"c":"P0131","t":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu niedrig","u":"/code/P0131/"},{"c":"P0132","t":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu hoch","u":"/code/P0132/"},{"c":"P0133","t":"Lambda-Sonde Bank 1 Sensor 1 – langsame Reaktion","u":"/code/P0133/"},{"c":"P0134","t":"Lambda-Sonde Bank 1 Sensor 1 – keine Aktivität","u":"/code/P0134/"},{"c":"P0135","t":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion","u":"/code/P0135/"},{"c":"P0136","t":"Lambda-Sonde Bank 1 Sensor 2 – Schaltkreis Fehlfunktion","u":"/code/P0136/"},{"c":"P0137","t":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu niedrig","u":"/code/P0137/"},{"c":"P0138","t":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu hoch","u":"/code/P0138/"},{"c":"P0141","t":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Fehlfunktion","u":"/code/P0141/"},{"c":"P0155","t":"Lambda-Sonde Bank 2 Sensor 1 – Heizkreis Fehlfunktion","u":"/code/P0155/"},{"c":"P0161","t":"Lambda-Sonde Bank 2 Sensor 2 – Heizkreis Fehlfunktion","u":"/code/P0161/"},{"c":"P0170","t":"Kraftstofftrimmung Fehlfunktion – Bank 1","u":"/code/P0170/"},{"c":"P0171","t":"Gemisch zu mager – Bank 1","u":"/code/P0171/"},{"c":"P0172","t":"Gemisch zu fett – Bank 1","u":"/code/P0172/"},{"c":"P0174","t":"Gemisch zu mager – Bank 2","u":"/code/P0174/"},{"c":"P0175","t":"Gemisch zu fett – Bank 2","u":"/code/P0175/"},{"c":"P0190","t":"Kraftstoffdrucksensor – Schaltkreis Fehlfunktion","u":"/code/P0190/"},{"c":"P0191","t":"Kraftstoffdrucksensor – Signal außerhalb Bereich","u":"/code/P0191/"},{"c":"P0192","t":"Kraftstoffdrucksensor – Signal zu niedrig","u":"/code/P0192/"},{"c":"P0193","t":"Kraftstoffdrucksensor – Signal zu hoch","u":"/code/P0193/"},{"c":"P0201","t":"Einspritzdüse Zylinder 1 – Steuerkreis","u":"/code/P0201/"},{"c":"P0202","t":"Einspritzdüse Zylinder 2 – Steuerkreis","u":"/code/P0202/"},{"c":"P0203","t":"Einspritzdüse Zylinder 3 – Steuerkreis","u":"/code/P0203/"},{"c":"P0204","t":"Einspritzdüse Zylinder 4 – Steuerkreis","u":"/code/P0204/"},{"c":"P0205","t":"Einspritzdüse Zylinder 5 – Steuerkreis","u":"/code/P0205/"},{"c":"P0206","t":"Einspritzdüse Zylinder 6 – Steuerkreis","u":"/code/P0206/"},{"c":"P0222","t":"Drosselklappensensor 2 – Signal zu niedrig","u":"/code/P0222/"},{"c":"P0223","t":"Drosselklappensensor 2 – Signal zu hoch","u":"/code/P0223/"},{"c":"P0230","t":"Kraftstoffpumpen-Relais – Steuerkreis","u":"/code/P0230/"},{"c":"P0234","t":"Ladedruckregelung – Ladedruck zu hoch","u":"/code/P0234/"},{"c":"P0235","t":"Ladedrucksensor – Schaltkreis Fehlfunktion","u":"/code/P0235/"},{"c":"P0251","t":"Einspritzpumpe – Regelabweichung (Diesel)","u":"/code/P0251/"},{"c":"P0261","t":"Einspritzdüse Zyl. 1 – Signal zu niedrig","u":"/code/P0261/"},{"c":"P0262","t":"Einspritzdüse Zyl. 1 – Signal zu hoch","u":"/code/P0262/"},{"c":"P0299","t":"Ladedruckregelung – Ladedruck zu niedrig","u":"/code/P0299/"},{"c":"P0300","t":"Zufällige/multiple Zündaussetzer erkannt","u":"/code/P0300/"},{"c":"P0301","t":"Zündaussetzer Zylinder 1","u":"/code/P0301/"},{"c":"P0302","t":"Zündaussetzer Zylinder 2","u":"/code/P0302/"},{"c":"P0303","t":"Zündaussetzer Zylinder 3","u":"/code/P0303/"},{"c":"P0304","t":"Zündaussetzer Zylinder 4","u":"/code/P0304/"},{"c":"P0305","t":"Zündaussetzer Zylinder 5","u":"/code/P0305/"},{"c":"P0306","t":"Zündaussetzer Zylinder 6","u":"/code/P0306/"},{"c":"P0307","t":"Zündaussetzer Zylinder 7","u":"/code/P0307/"},{"c":"P0308","t":"Zündaussetzer Zylinder 8","u":"/code/P0308/"},{"c":"P0325","t":"Klopfsensor 1 – Schaltkreis Fehlfunktion","u":"/code/P0325/"},{"c":"P0326","t":"Klopfsensor 1 – Signal außerhalb Bereich","u":"/code/P0326/"},{"c":"P0327","t":"Klopfsensor 1 – Signal zu niedrig","u":"/code/P0327/"},{"c":"P0328","t":"Klopfsensor 1 – Signal zu hoch","u":"/code/P0328/"},{"c":"P0335","t":"Kurbelwellensensor – Schaltkreis Fehlfunktion","u":"/code/P0335/"},{"c":"P0336","t":"Kurbelwellensensor – Signal außerhalb Bereich","u":"/code/P0336/"},{"c":"P0340","t":"Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion","u":"/code/P0340/"},{"c":"P0341","t":"Nockenwellensensor Bank 1 – Signal außerhalb Bereich","u":"/code/P0341/"},{"c":"P0345","t":"Nockenwellensensor Bank 2 – Schaltkreis Fehlfunktion","u":"/code/P0345/"},{"c":"P0351","t":"Zündspule A – Steuerkreis","u":"/code/P0351/"},{"c":"P0352","t":"Zündspule B – Steuerkreis","u":"/code/P0352/"},{"c":"P0353","t":"Zündspule C – Steuerkreis","u":"/code/P0353/"},{"c":"P0354","t":"Zündspule D – Steuerkreis","u":"/code/P0354/"},{"c":"P0380","t":"Glühkerzen-Steuerkreis – Fehlfunktion","u":"/code/P0380/"},{"c":"P0381","t":"Glühkerzen-Kontrollleuchte – Steuerkreis Fehlfunktion","u":"/code/P0381/"},{"c":"P0400","t":"AGR-System – Durchfluss Fehlfunktion","u":"/code/P0400/"},{"c":"P0401","t":"AGR-System – Durchfluss unzureichend","u":"/code/P0401/"},{"c":"P0402","t":"AGR-System – Durchfluss zu hoch","u":"/code/P0402/"},{"c":"P0403","t":"AGR-Ventil Steuerkreis Fehlfunktion","u":"/code/P0403/"},{"c":"P0404","t":"AGR-Ventil – Bereich/Leistung außerhalb Spezifikation","u":"/code/P0404/"},{"c":"P0405","t":"AGR-Positionssensor – Signal zu niedrig","u":"/code/P0405/"},{"c":"P0410","t":"Sekundärluftsystem – Fehlfunktion","u":"/code/P0410/"},{"c":"P0411","t":"Sekundärluftsystem – Durchfluss nicht korrekt","u":"/code/P0411/"},{"c":"P0412","t":"Sekundärluftventil – Steuerkreis Fehlfunktion","u":"/code/P0412/"},{"c":"P0420","t":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)","u":"/code/P0420/"},{"c":"P0421","t":"Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)","u":"/code/P0421/"},{"c":"P0430","t":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)","u":"/code/P0430/"},{"c":"P0440","t":"EVAP-System Fehlfunktion","u":"/code/P0440/"},{"c":"P0441","t":"EVAP-System – Spülstrom nicht korrekt","u":"/code/P0441/"},{"c":"P0442","t":"EVAP-System – kleine Leckage erkannt","u":"/code/P0442/"},{"c":"P0443","t":"EVAP-Spülventil Steuerkreis Fehlfunktion","u":"/code/P0443/"},{"c":"P0446","t":"EVAP-Entlüftungsventil Steuerkreis Fehlfunktion","u":"/code/P0446/"},{"c":"P0455","t":"EVAP-System – große Leckage erkannt","u":"/code/P0455/"},{"c":"P0456","t":"EVAP-System – sehr kleine Leckage erkannt","u":"/code/P0456/"},{"c":"P0460","t":"Kraftstoffstandsensor – Schaltkreis Fehlfunktion","u":"/code/P0460/"},{"c":"P0461","t":"Kraftstoffstandsensor – Signal außerhalb Bereich","u":"/code/P0461/"},{"c":"P0462","t":"Kraftstoffstandsensor – Signal zu niedrig","u":"/code/P0462/"},{"c":"P0463","t":"Kraftstoffstandsensor – Signal zu hoch","u":"/code/P0463/"},{"c":"P0480","t":"Kühlerlüfter 1 – Steuerkreis Fehlfunktion","u":"/code/P0480/"},{"c":"P0481","t":"Kühlerlüfter 2 – Steuerkreis Fehlfunktion","u":"/code/P0481/"},{"c":"P0496","t":"EVAP-System – Spülstrom zu hoch (Motor aus)","u":"/code/P0496/"},{"c":"P0497","t":"EVAP-System – Spülstrom zu niedrig","u":"/code/P0497/"},{"c":"P0500","t":"Geschwindigkeitssensor – Fehlfunktion","u":"/code/P0500/"},{"c":"P0501","t":"Geschwindigkeitssensor – Signal außerhalb Bereich","u":"/code/P0501/"},{"c":"P0502","t":"Geschwindigkeitssensor – Signal zu niedrig","u":"/code/P0502/"},{"c":"P0503","t":"Geschwindigkeitssensor – Signal intermittierend","u":"/code/P0503/"},{"c":"P0505","t":"Leerlaufregelung – Fehlfunktion","u":"/code/P0505/"},{"c":"P0506","t":"Leerlaufdrehzahl zu niedrig","u":"/code/P0506/"},{"c":"P0507","t":"Leerlaufdrehzahl zu hoch","u":"/code/P0507/"},{"c":"P0530","t":"Klimakompressor-Drucksensor – Schaltkreis Fehlfunktion","u":"/code/P0530/"},{"c":"P0531","t":"Klimakompressor-Drucksensor – Signal außerhalb Bereich","u":"/code/P0531/"},{"c":"P0545","t":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu niedrig","u":"/code/P0545/"},{"c":"P0546","t":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu hoch","u":"/code/P0546/"},{"c":"P0562","t":"Systemspannung zu niedrig","u":"/code/P0562/"},{"c":"P0563","t":"Systemspannung zu hoch","u":"/code/P0563/"},{"c":"P0597","t":"Thermostat-Heizelement – Steuerkreis offen","u":"/code/P0597/"},{"c":"P0600","t":"CAN-Bus – Serieller Kommunikationsfehler","u":"/code/P0600/"},{"c":"P0601","t":"Interner Steuergerät-Speicherfehler (Prüfsumme)","u":"/code/P0601/"},{"c":"P0602","t":"Steuergerät – Programmierfehler","u":"/code/P0602/"},{"c":"P0627","t":"Kraftstoffpumpen-Steuerkreis – offen","u":"/code/P0627/"},{"c":"P0700","t":"Getriebesteuerung – Fehlfunktion erkannt","u":"/code/P0700/"},{"c":"P0715","t":"Turbinendrehzahlsensor – Schaltkreis Fehlfunktion","u":"/code/P0715/"},{"c":"P0720","t":"Abtriebsdrehzahlsensor – Schaltkreis Fehlfunktion","u":"/code/P0720/"},{"c":"P0730","t":"Falsches Übersetzungsverhältnis","u":"/code/P0730/"},{"c":"P0740","t":"Drehmomentwandler-Überbrückungskupplung – Schaltkreis Fehlfunktion","u":"/code/P0740/"},{"c":"P0750","t":"Schaltmagnetventil A – Fehlfunktion","u":"/code/P0750/"},{"c":"P0755","t":"Schaltmagnetventil B – Fehlfunktion","u":"/code/P0755/"},{"c":"290900","t":"[BMW] Luftsystem, Luft- zu AGR-Massenstrom Plausibilität","u":"/bmw/290900/"},{"c":"29CD","t":"[BMW] Gemischregelung, Gemisch zu fett","u":"/bmw/29CD/"},{"c":"29D0","t":"[BMW] Gemischregelung, Gemisch zu mager","u":"/bmw/29D0/"},{"c":"29E0","t":"[BMW] Lambda-Regelung, Grenzwert überschritten Bank 1","u":"/bmw/29E0/"},{"c":"2A69","t":"[BMW] Vanos Einlass, Abweichung","u":"/bmw/2A69/"},{"c":"2A6C","t":"[BMW] Vanos Einlass, Stellzeit zu lang","u":"/bmw/2A6C/"},{"c":"2A6F","t":"[BMW] Vanos Auslass, Abweichung","u":"/bmw/2A6F/"},{"c":"2A70","t":"[BMW] Drosselklappensteller, Ansteuerung","u":"/bmw/2A70/"},{"c":"2A7A","t":"[BMW] Ladedruckregelung, Ladedruck zu niedrig","u":"/bmw/2A7A/"},{"c":"2AAF","t":"[BMW] Hochdruck-Kraftstoffpumpe, Druck zu niedrig","u":"/bmw/2AAF/"},{"c":"2C00","t":"[BMW] Zündaussetzer, mehrere Zylinder","u":"/bmw/2C00/"},{"c":"2C01","t":"[BMW] Zündaussetzer Zylinder 1","u":"/bmw/2C01/"},{"c":"2C02","t":"[BMW] Zündaussetzer Zylinder 2","u":"/bmw/2C02/"},{"c":"2C03","t":"[BMW] Zündaussetzer Zylinder 3","u":"/bmw/2C03/"},{"c":"2C04","t":"[BMW] Zündaussetzer Zylinder 4","u":"/bmw/2C04/"},{"c":"2C05","t":"[BMW] Zündaussetzer Zylinder 5","u":"/bmw/2C05/"},{"c":"2C06","t":"[BMW] Zündaussetzer Zylinder 6","u":"/bmw/2C06/"},{"c":"2E81","t":"[BMW] Kühlmitteltemperatursensor, Signal nicht plausibel","u":"/bmw/2E81/"},{"c":"2E82","t":"[BMW] Kühlmitteltemperatursensor, Signal zu niedrig","u":"/bmw/2E82/"},{"c":"2E83","t":"[BMW] Kühlmitteltemperatursensor, Signal zu hoch","u":"/bmw/2E83/"},{"c":"2EAE","t":"[BMW] Elektrische Kühlmittelpumpe, Ansteuerung","u":"/bmw/2EAE/"},{"c":"2EF5","t":"[BMW] Kennfeldthermostat, Ansteuerung","u":"/bmw/2EF5/"},{"c":"2FBE","t":"[BMW] Ventiltronic, Stellmotor Fehlfunktion","u":"/bmw/2FBE/"},{"c":"2FBF","t":"[BMW] Ventiltronic, Exzenterwelle Position","u":"/bmw/2FBF/"},{"c":"2FC0","t":"[BMW] Ventiltronic, Referenzierung fehlgeschlagen","u":"/bmw/2FC0/"},{"c":"480A","t":"[BMW] AGR-Ventil, Ansteuerung","u":"/bmw/480A/"},{"c":"4810","t":"[BMW] Dieselpartikelfilter, Differenzdruck zu hoch","u":"/bmw/4810/"},{"c":"4811","t":"[BMW] Dieselpartikelfilter, Regeneration nicht möglich","u":"/bmw/4811/"},{"c":"4812","t":"[BMW] DPF Differenzdrucksensor, Signal nicht plausibel","u":"/bmw/4812/"},{"c":"4813","t":"[BMW] Abgastemperatursensor vor DPF, Signal nicht plausibel","u":"/bmw/4813/"},{"c":"5088","t":"[BMW] Getriebe, Übersetzungsverhältnis nicht plausibel","u":"/bmw/5088/"},{"c":"5089","t":"[BMW] Drehmomentwandler-Schlupf zu hoch","u":"/bmw/5089/"},{"c":"508A","t":"[BMW] Getriebe, Schaltvorgang fehlerhaft","u":"/bmw/508A/"},{"c":"508B","t":"[BMW] Getriebeöl-Temperatur zu hoch","u":"/bmw/508B/"},{"c":"5098","t":"[BMW] Wandlerüberbrückung, Fehlfunktion","u":"/bmw/5098/"},{"c":"5E10","t":"[BMW] DSC-Steuergerät, interne Fehlfunktion","u":"/bmw/5E10/"},{"c":"5E20","t":"[BMW] Raddrehzahlsensor vorne links, Signal","u":"/bmw/5E20/"},{"c":"5E21","t":"[BMW] Raddrehzahlsensor vorne rechts, Signal","u":"/bmw/5E21/"},{"c":"5E22","t":"[BMW] Raddrehzahlsensor hinten links, Signal","u":"/bmw/5E22/"},{"c":"5E23","t":"[BMW] Raddrehzahlsensor hinten rechts, Signal","u":"/bmw/5E23/"},{"c":"9381","t":"[BMW] Fahrer-Airbag, Auslösekreis","u":"/bmw/9381/"},{"c":"9382","t":"[BMW] Beifahrer-Airbag, Auslösekreis","u":"/bmw/9382/"},{"c":"93A1","t":"[BMW] Seitenairbag links, Auslösekreis","u":"/bmw/93A1/"},{"c":"93A2","t":"[BMW] Seitenairbag rechts, Auslösekreis","u":"/bmw/93A2/"},{"c":"93B2","t":"[BMW] Sicherheitsbatterieklemme, Auslösekreis","u":"/bmw/93B2/"},{"c":"93C5","t":"[BMW] Gurtstraffer Fahrer, Auslösekreis","u":"/bmw/93C5/"},{"c":"9CA1","t":"[BMW] Verbrauchsanzeige, Plausibilitätsfehler","u":"/bmw/9CA1/"},{"c":"9CA2","t":"[BMW] Kühlmitteltemperaturanzeige, Fehler","u":"/bmw/9CA2/"},{"c":"9CA3","t":"[BMW] Drehzahlmesser, Fehler","u":"/bmw/9CA3/"},{"c":"9CB0","t":"[BMW] CAN-Bus Empfang, Fehler","u":"/bmw/9CB0/"},{"c":"9CB1","t":"[BMW] Kombiinstrument, interne Fehlfunktion","u":"/bmw/9CB1/"},{"c":"A0A0","t":"[BMW] FRM interne Fehlfunktion","u":"/bmw/A0A0/"},{"c":"A0B2","t":"[BMW] Abblendlicht links, Kurzschluss oder offener Stromkreis","u":"/bmw/A0B2/"},{"c":"A0B3","t":"[BMW] Abblendlicht rechts, Kurzschluss oder offener Stromkreis","u":"/bmw/A0B3/"},{"c":"A0B4","t":"[BMW] Rücklicht links, Fehlfunktion","u":"/bmw/A0B4/"},{"c":"A0B5","t":"[BMW] Rücklicht rechts, Fehlfunktion","u":"/bmw/A0B5/"},{"c":"A251","t":"[BMW] EWS-Abgleich, Schlüssel nicht angelernt","u":"/bmw/A251/"},{"c":"A252","t":"[BMW] Zweiter Schlüssel nicht angelernt","u":"/bmw/A252/"},{"c":"A253","t":"[BMW] Lenkradschloss, Fehlfunktion","u":"/bmw/A253/"},{"c":"A254","t":"[BMW] Startfreigabe, Timeout","u":"/bmw/A254/"},{"c":"A255","t":"[BMW] CAS Kommunikation, Fehler","u":"/bmw/A255/"}];
 
-  input.addEventListener("input",function(){
-    var q=this.value.trim().toUpperCase();
-    if(q.length<1){box.className="search-results";box.innerHTML="";return;}
-    var matches=data.filter(function(d){return d.c.indexOf(q)>-1||d.t.toUpperCase().indexOf(q)>-1;}).slice(0,12);
-    if(matches.length===0){
-      box.innerHTML='<div class="no-results">Kein Code gefunden.</div>';
-    } else {
-      box.innerHTML=matches.map(function(m){return '<a href="/code/'+m.c+'/"><strong>'+m.c+'</strong>'+m.t+'</a>';}).join("");
+  function escHtml(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  var input = document.getElementById("search");
+  var box = document.getElementById("results");
+
+  input.addEventListener("input", function(){
+    var q = this.value.trim().toUpperCase();
+    if(q.length < 1){
+      box.className = "search-results";
+      box.innerHTML = "";
+      return;
     }
-    box.className="search-results open";
+    var matches = data.filter(function(d){
+      return d.c.toUpperCase().indexOf(q) > -1 || d.t.toUpperCase().indexOf(q) > -1;
+    }).slice(0, 15);
+
+    box.innerHTML = matches.length === 0
+      ? '<div class="no-results">Kein Code gefunden.</div>'
+      : matches.map(function(x){
+          return '<a href="' + x.u + '"><strong>' + escHtml(x.c) + '</strong>' + escHtml(x.t) + '</a>';
+        }).join("");
+
+    box.className = "search-results open";
   });
 
-  document.addEventListener("click",function(e){
-    if(!e.target.closest(".search-box"))box.className="search-results";
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".search-box")) box.className = "search-results";
   });
 
-  input.addEventListener("focus",function(){if(box.innerHTML)box.className="search-results open";});
+  input.addEventListener("focus", function(){
+    if(box.innerHTML) box.className = "search-results open";
+  });
+
+  // Optional: support ?q= query (nice for sharing)
+  var params = new URLSearchParams(window.location.search);
+  var qParam = params.get("q");
+  if(qParam){
+    input.value = qParam;
+    input.dispatchEvent(new Event("input"));
+  }
 })();
 </script>
 </body>
