@@ -271,11 +271,14 @@ function normalizeBrandSlug(slug) {
 }
 
 function normalizeCodeInput(q) {
-  return String(q || "")
+  // Extract a clean OBD code from messy user input like:
+  // "P0700 – Getriebesteuerung ..." or "p 0420" or "P0420/P0430"
+  const cleaned = String(q || "")
     .trim()
     .toUpperCase()
-    .replace(/\s+/g, "")
     .replace(/[^A-Z0-9]/g, "");
+  const m = cleaned.match(/[PCBU]\d{4}/);
+  return m ? m[0] : "";
 }
 
 // ── Validation (fail fast) ─────────────────
@@ -341,6 +344,22 @@ function validate() {
     const name = `brands[${i}] ${b.slug || "(no slug)"}`;
     req(b, "slug", name);
     req(b, "name", name);
+
+    // Optional: curated "popularCodes" per brand (must exist in codes.json)
+    if (b.popularCodes !== undefined) {
+      if (!Array.isArray(b.popularCodes)) {
+        errs.push(`${name}: popularCodes must be an array`);
+      } else {
+        const seen = new Set();
+        b.popularCodes.forEach((pc) => {
+          const code = String(pc || "").toUpperCase();
+          if (!/^[PCBU]\d{4}$/.test(code)) errs.push(`${name}: popularCodes contains invalid code '${pc}'`);
+          if (!codeSet.has(code)) errs.push(`${name}: popularCodes '${code}' not found in codes.json`);
+          if (seen.has(code)) errs.push(`${name}: popularCodes contains duplicate '${code}'`);
+          seen.add(code);
+        });
+      }
+    }
   });
 
   // Overrides must reference an existing brand + P0xxx code
@@ -460,6 +479,11 @@ function buildIndex() {
 
   const topCodes = topIds.map((id) => codes.find((c) => c.code === id)).filter(Boolean);
 
+  const popularSelectOptions = [
+    '<option value="">Häufige Codes wählen…</option>',
+    ...topCodes.map((c) => `<option value="${c.code}">${esc(c.code)} – ${esc(c.title)}</option>`),
+  ].join("\n");
+
   const cats = {};
   codes.forEach((c) => {
     if (!cats[c.category]) cats[c.category] = [];
@@ -574,7 +598,7 @@ ${header()}
           <div class="panel-row">
             <div class="search-box wide">
               ${searchIconSvg}
-              <input type="text" id="codeOnly" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+              <input type="text" id="codeOnly" list="codeListAll" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
             </div>
             <button class="btn primary" type="button" id="openCode">Öffnen</button>
           </div>
@@ -589,17 +613,31 @@ ${header()}
                 ${brandOptions}
               </select>
             </div>
-            <div class="search-box wide">
-              ${searchIconSvg}
-              <input type="text" id="brandCode" list="codeList" placeholder="Code wählen (z. B. P0420)" autocomplete="off" aria-label="Fehlercode nach Marke" disabled>
+            <div class="select-wrap wide">
+              <select id="brandCodeSelect" class="select" aria-label="Häufige Fehlercodes" disabled>
+                <option value="">Code wählen…</option>
+              </select>
             </div>
             <button class="btn primary" type="button" id="openBrandCode" disabled>Öffnen</button>
+          </div>
+          <div class="panel-subrow">
+            <button class="link" type="button" id="toggleBrandManual" aria-expanded="false" disabled>Anderen Code eingeben</button>
+          </div>
+          <div class="panel-row" id="brandManualRow" style="display:none">
+            <div class="select-wrap" aria-hidden="true" style="visibility:hidden">
+              <select class="select" tabindex="-1"><option></option></select>
+            </div>
+            <div class="search-box wide">
+              ${searchIconSvg}
+              <input type="text" id="brandCodeManual" placeholder="oder Code eintippen (z. B. P0420)" autocomplete="off" aria-label="Fehlercode nach Marke (manuell)" disabled>
+            </div>
+            <div></div>
           </div>
           <p class="panel-note">Marken unterscheiden sich meist in <em>typischen Ursachen</em> und Diagnosewegen – nicht in der Code‑Grundbedeutung.</p>
         </div>
       </div>
 
-      <datalist id="codeList">
+      <datalist id="codeListAll">
         ${codeOptionsAll}
       </datalist>
     </div>
@@ -644,37 +682,97 @@ ${commonClientJs}
 
 <script>
 (function(){
-  function norm(q){
-    return String(q||"").trim().toUpperCase().replace(/\s+/g,"").replace(/[^A-Z0-9]/g, "");
+  function extractObd(input){
+    var cleaned = String(input||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    var m = cleaned.match(/[PCBU]\d{4}/);
+    return m ? m[0] : "";
   }
-  function isObd(q){ return /^[PCBU]\d{4}$/.test(q); }
+  function isObd(code){ return /^[PCBU]\d{4}$/.test(code); }
   function toast(msg){
     if(window.showToast) window.showToast(msg);
     else alert(msg);
+  }
+
+  // Data for brand dropdown (curated "popular" codes)
+  var popularByBrand = ${JSON.stringify(Object.fromEntries(brands.map(b => [b.slug, (b.popularCodes||[])])))};
+  var codeTitles = ${JSON.stringify(Object.fromEntries(codes.map(c => [c.code, c.title])))};
+
+  function escAttr(s){
+    return String(s||"")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
   }
 
   var codeOnly = document.getElementById('codeOnly');
   var openCode = document.getElementById('openCode');
 
   var brandSel = document.getElementById('brandSelect');
-  var brandCode = document.getElementById('brandCode');
+  var brandCodeSelect = document.getElementById('brandCodeSelect');
   var openBrand = document.getElementById('openBrandCode');
+
+  var toggleManual = document.getElementById('toggleBrandManual');
+  var manualRow = document.getElementById('brandManualRow');
+  var manualInput = document.getElementById('brandCodeManual');
+
+  function fillBrandCodes(){
+    var b = brandSel.value;
+    var list = (popularByBrand[b] || []);
+    // Reset select
+    brandCodeSelect.innerHTML = '<option value="">Code wählen…</option>' + list.map(function(code){
+      var t = codeTitles[code] || '';
+      return '<option value="'+code+'">'+escAttr(code + ' – ' + t)+'</option>';
+    }).join('');
+  }
+
+  function updateBrandOpenState(){
+    if(!brandSel.value){
+      openBrand.disabled = true;
+      return;
+    }
+
+    var code = '';
+    if(manualRow.style.display !== 'none'){
+      code = extractObd(manualInput.value);
+    }
+    if(!code){
+      code = extractObd(brandCodeSelect.value);
+    }
+    openBrand.disabled = !isObd(code);
+  }
 
   function setBrandEnabled(){
     var enabled = !!brandSel.value;
-    brandCode.disabled = !enabled;
-    openBrand.disabled = !enabled;
-    if(enabled) brandCode.focus();
+    brandCodeSelect.disabled = !enabled;
+    toggleManual.disabled = !enabled;
+    manualInput.disabled = !enabled;
+
+    if(!enabled){
+      manualRow.style.display = 'none';
+      toggleManual.setAttribute('aria-expanded','false');
+      toggleManual.textContent = 'Anderen Code eingeben';
+      manualInput.value = '';
+      brandCodeSelect.value = '';
+      updateBrandOpenState();
+      return;
+    }
+
+    fillBrandCodes();
+    brandCodeSelect.value = '';
+    updateBrandOpenState();
+    // Focus sensible default
+    brandCodeSelect.focus();
   }
 
   function openGeneric(){
-    var v = norm(codeOnly.value);
-    if(!isObd(v)){
+    var code = extractObd(codeOnly.value);
+    if(!isObd(code)){
       toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
       codeOnly.focus();
       return;
     }
-    window.location.href = ${JSON.stringify(BASE_PATH)} + '/code/' + v + '/';
+    window.location.href = ${JSON.stringify(BASE_PATH)} + '/code/' + code + '/';
   }
 
   function openBrandCode(){
@@ -684,39 +782,83 @@ ${commonClientJs}
       brandSel.focus();
       return;
     }
-    var v = norm(brandCode.value);
-    if(!isObd(v)){
+
+    // Prefer manual input if visible + has something
+    var code = '';
+    if(manualRow.style.display !== 'none'){
+      code = extractObd(manualInput.value);
+    }
+    if(!code){
+      code = extractObd(brandCodeSelect.value);
+    }
+
+    if(!isObd(code)){
       toast('Bitte einen gültigen OBD-II Code auswählen (z. B. P0420).');
-      brandCode.focus();
+      brandCodeSelect.focus();
       return;
     }
-    window.location.href = ${JSON.stringify(BASE_PATH)} + '/marke/' + b + '/code/' + v + '/';
+
+    window.location.href = ${JSON.stringify(BASE_PATH)} + '/marke/' + b + '/code/' + code + '/';
+  }
+
+  function toggleBrandManual(){
+    var open = manualRow.style.display !== 'none';
+    manualRow.style.display = open ? 'none' : 'flex';
+    toggleManual.setAttribute('aria-expanded', String(!open));
+    toggleManual.textContent = open ? 'Anderen Code eingeben' : 'Zurück zur Auswahl';
+    if(!open){
+      manualInput.focus();
+    }else{
+      manualInput.value = '';
+      brandCodeSelect.focus();
+    }
+    updateBrandOpenState();
   }
 
   openCode.addEventListener('click', openGeneric);
   codeOnly.addEventListener('keydown', function(e){ if(e.key==='Enter') openGeneric(); });
 
   openBrand.addEventListener('click', openBrandCode);
-  brandCode.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
+  brandCodeSelect.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
+  manualInput.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
 
+  brandCodeSelect.addEventListener('change', updateBrandOpenState);
+  manualInput.addEventListener('input', updateBrandOpenState);
   brandSel.addEventListener('change', setBrandEnabled);
+  toggleManual.addEventListener('click', toggleBrandManual);
 
   // Prefill support: ?code=P0420  or ?brand=vw&code=P0420
   var params = new URLSearchParams(window.location.search);
   var bParam = params.get('brand');
   var cParam = params.get('code');
+
   if(bParam){
     brandSel.value = bParam;
     setBrandEnabled();
   }else{
     setBrandEnabled();
   }
+
   if(cParam){
-    var c = norm(cParam);
-    if(bParam){
-      brandCode.value = c;
-    }else{
-      codeOnly.value = c;
+    var code = extractObd(cParam);
+    if(code){
+      if(bParam){
+        // If code is in curated list, select it. Otherwise open manual.
+        var found = false;
+        Array.from(brandCodeSelect.options).forEach(function(o){
+          if(o.value === code) found = true;
+        });
+        if(found){
+          brandCodeSelect.value = code;
+        }else{
+          manualRow.style.display = 'flex';
+          toggleManual.setAttribute('aria-expanded','true');
+          toggleManual.textContent = 'Zurück zur Auswahl';
+          manualInput.value = code;
+        }
+      }else{
+        codeOnly.value = code;
+      }
     }
   }
 })();
@@ -792,9 +934,16 @@ function buildBrandLanding(b) {
   const title = `${b.name} Fehlercodes – OBD-II Code Finder`;
   const description = `OBD-II Fehlercodes für ${b.name}: Codes nachschlagen und im Marken-Kontext lesen (DACH).`;
 
-  // A compact list of top codes for the brand landing
-  const topIds = ["P0420", "P0171", "P0300", "P0455", "P0128", "P0401", "P0442", "P0101", "P0174", "P0430"]; 
+  // Curated "popular" codes for this brand (fallback if not provided)
+  const topIds = Array.isArray(b.popularCodes) && b.popularCodes.length
+    ? b.popularCodes
+    : ["P0420", "P0171", "P0300", "P0455", "P0128", "P0401", "P0442", "P0101", "P0174", "P0430"];
   const topCodes = topIds.map((id) => codes.find((c) => c.code === id)).filter(Boolean);
+
+  const popularSelectOptions = [
+    '<option value="">Häufige Codes wählen…</option>',
+    ...topCodes.map((c) => `<option value="${c.code}">${esc(c.code)} – ${esc(c.title)}</option>`),
+  ].join("\n");
 
   let topList = `<ul class="code-list">`;
   topCodes.forEach((c) => {
@@ -830,15 +979,32 @@ ${header()}
           <h2>Code auswählen</h2>
           <div class="panel-row">
             <div class="brand-fixed" aria-label="Marke">${esc(b.name)}</div>
-            <div class="search-box wide">
-              ${searchIconSvg}
-              <input type="text" id="brandCode" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+            <div class="select-wrap wide">
+              <select id="popularSelect" class="select" aria-label="Häufige Fehlercodes">
+                ${popularSelectOptions}
+              </select>
             </div>
-            <button class="btn primary" type="button" id="go">Öffnen</button>
+            <button class="btn primary" type="button" id="goPopular">Öffnen</button>
             <a class="btn" href="${href("/marken/")}">Zur Markenübersicht</a>
           </div>
 
-          <datalist id="codeList">
+          <div class="panel-subrow">
+            <button class="link" type="button" id="toggleAllCodes" aria-expanded="false">Alle Codes durchsuchen</button>
+          </div>
+
+          <div class="panel-row" id="allCodesRow" style="display:none">
+            <div class="select-wrap" aria-hidden="true" style="visibility:hidden">
+              <select class="select" tabindex="-1"><option></option></select>
+            </div>
+            <div class="search-box wide">
+              ${searchIconSvg}
+              <input type="text" id="manualCode" placeholder="oder Code eintippen (z. B. P0420)" autocomplete="off" aria-label="OBD-II Code (manuell)">
+            </div>
+            <button class="btn primary" type="button" id="goManual">Öffnen</button>
+            <div></div>
+          </div>
+
+          <datalist id="codeListAll">
             ${codeOptionsAll}
           </datalist>
 
@@ -879,28 +1045,76 @@ ${commonClientJs}
 
 <script>
 (function(){
-  function norm(q){ return String(q||"").trim().toUpperCase().replace(/\s+/g,"").replace(/[^A-Z0-9]/g, ""); }
-  function isObd(q){ return /^[PCBU]\d{4}$/.test(q); }
+  function extractObd(input){
+    var cleaned = String(input||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    var m = cleaned.match(/[PCBU]\d{4}/);
+    return m ? m[0] : "";
+  }
+  function isObd(code){ return /^[PCBU]\d{4}$/.test(code); }
   function toast(msg){
     if(window.showToast) window.showToast(msg);
     else alert(msg);
   }
 
-  var inp = document.getElementById('brandCode');
-  var go = document.getElementById('go');
+  var popularSelect = document.getElementById('popularSelect');
+  var goPopular = document.getElementById('goPopular');
 
-  function open(){
-    var v = norm(inp.value);
-    if(!isObd(v)){
-      toast('Bitte einen gültigen OBD-II Code wählen (z. B. P0420).');
-      inp.focus();
+  var toggleAll = document.getElementById('toggleAllCodes');
+  var allRow = document.getElementById('allCodesRow');
+  var manual = document.getElementById('manualCode');
+  var goManual = document.getElementById('goManual');
+
+  function openWith(code){
+    if(!isObd(code)){
+      toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
       return;
     }
-    window.location.href = ${JSON.stringify(href(`/marke/${brandSlug}/code/`))} + v + '/';
+    window.location.href = ${JSON.stringify(href(`/marke/${brandSlug}/code/`))} + code + '/';
   }
 
-  go.addEventListener('click', open);
-  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') open(); });
+  function openPopular(){
+    var code = extractObd(popularSelect.value);
+    if(!code){
+      toast('Bitte zuerst einen Code auswählen.');
+      popularSelect.focus();
+      return;
+    }
+    openWith(code);
+  }
+
+  function openManual(){
+    var code = extractObd(manual.value);
+    if(!code){
+      toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
+      manual.focus();
+      return;
+    }
+    openWith(code);
+  }
+
+  function toggleAllCodes(){
+    var open = allRow.style.display !== 'none';
+    allRow.style.display = open ? 'none' : 'flex';
+    toggleAll.setAttribute('aria-expanded', String(!open));
+    toggleAll.textContent = open ? 'Alle Codes durchsuchen' : 'Zurück (nur häufige Codes)';
+    if(!open){
+      // enable dropdown suggestions only when explicitly opened
+      manual.setAttribute('list','codeListAll');
+      manual.focus();
+    }else{
+      manual.removeAttribute('list');
+      manual.value = '';
+      popularSelect.focus();
+    }
+  }
+
+  goPopular.addEventListener('click', openPopular);
+  popularSelect.addEventListener('keydown', function(e){ if(e.key==='Enter') openPopular(); });
+
+  goManual.addEventListener('click', openManual);
+  manual.addEventListener('keydown', function(e){ if(e.key==='Enter') openManual(); });
+
+  toggleAll.addEventListener('click', toggleAllCodes);
 })();
 </script>
 </body>
@@ -1593,7 +1807,11 @@ function buildRobots() {
 }
 
 // ── RUN ───────────────────────────────────
-if (fs.existsSync(DIST)) fs.rmSync(DIST, { recursive: true });
+if (fs.existsSync(DIST)) {
+  // WebContainers (StackBlitz) can be picky about recursive deletes.
+  // force + retries makes rebuilds stable.
+  fs.rmSync(DIST, { recursive: true, force: true, maxRetries: 6, retryDelay: 50 });
+}
 
 validate();
 writeAssets();

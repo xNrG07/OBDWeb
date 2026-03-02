@@ -391,6 +391,26 @@ footer .disclaimer { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem
 }
 .panel-row .search-box{ margin: 0; flex: 1; min-width: 240px; }
 .panel-row .select{ min-width: 180px; }
+.panel-subrow{
+  margin-top: 0.55rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.link{
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.link[disabled]{
+  color: var(--text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
 .panel-note{
   margin-top: 0.65rem;
   color: var(--text-muted);

@@ -37,7 +37,7 @@
           <div class="panel-row">
             <div class="search-box wide">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="codeOnly" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+              <input type="text" id="codeOnly" list="codeListAll" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
             </div>
             <button class="btn primary" type="button" id="openCode">Öffnen</button>
           </div>
@@ -64,17 +64,31 @@
 <option value="kia">Kia</option>
               </select>
             </div>
-            <div class="search-box wide">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="brandCode" list="codeList" placeholder="Code wählen (z. B. P0420)" autocomplete="off" aria-label="Fehlercode nach Marke" disabled>
+            <div class="select-wrap wide">
+              <select id="brandCodeSelect" class="select" aria-label="Häufige Fehlercodes" disabled>
+                <option value="">Code wählen…</option>
+              </select>
             </div>
             <button class="btn primary" type="button" id="openBrandCode" disabled>Öffnen</button>
+          </div>
+          <div class="panel-subrow">
+            <button class="link" type="button" id="toggleBrandManual" aria-expanded="false" disabled>Anderen Code eingeben</button>
+          </div>
+          <div class="panel-row" id="brandManualRow" style="display:none">
+            <div class="select-wrap" aria-hidden="true" style="visibility:hidden">
+              <select class="select" tabindex="-1"><option></option></select>
+            </div>
+            <div class="search-box wide">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="brandCodeManual" placeholder="oder Code eintippen (z. B. P0420)" autocomplete="off" aria-label="Fehlercode nach Marke (manuell)" disabled>
+            </div>
+            <div></div>
           </div>
           <p class="panel-note">Marken unterscheiden sich meist in <em>typischen Ursachen</em> und Diagnosewegen – nicht in der Code‑Grundbedeutung.</p>
         </div>
       </div>
 
-      <datalist id="codeList">
+      <datalist id="codeListAll">
         <option value="P0010" label="Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis"></option>
 <option value="P0011" label="Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt"></option>
 <option value="P0012" label="Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt"></option>
@@ -351,37 +365,97 @@
 
 <script>
 (function(){
-  function norm(q){
-    return String(q||"").trim().toUpperCase().replace(/s+/g,"").replace(/[^A-Z0-9]/g, "");
+  function extractObd(input){
+    var cleaned = String(input||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    var m = cleaned.match(/[PCBU]d{4}/);
+    return m ? m[0] : "";
   }
-  function isObd(q){ return /^[PCBU]d{4}$/.test(q); }
+  function isObd(code){ return /^[PCBU]d{4}$/.test(code); }
   function toast(msg){
     if(window.showToast) window.showToast(msg);
     else alert(msg);
+  }
+
+  // Data for brand dropdown (curated "popular" codes)
+  var popularByBrand = {"vw":["P0420","P0430","P0171","P0174","P0300","P0299","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700"],"audi":["P0420","P0430","P0171","P0174","P0300","P0299","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700"],"bmw":["P0420","P0430","P0171","P0300","P0011","P0016","P0017","P0101","P0455","P0456","P0442","P0128","P0401","P0562","P0700"],"mercedes":["P0420","P0430","P0171","P0174","P0300","P0410","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700"],"porsche":["P0420","P0430","P0171","P0174","P0300","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700","P0016"],"skoda":["P0420","P0430","P0171","P0174","P0300","P0299","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700"],"seat":["P0420","P0430","P0171","P0174","P0300","P0299","P0101","P0455","P0456","P0442","P0440","P0128","P0401","P0562","P0700"],"opel":["P0420","P0171","P0300","P0455","P0456","P0442","P0101","P0128","P0401","P0500","P0562","P0700","P0421","P0410","P0299"],"ford":["P0420","P0171","P0300","P0455","P0456","P0442","P0101","P0128","P0401","P0500","P0562","P0700","P0421","P0410","P0299"],"toyota":["P0420","P0430","P0171","P0174","P0300","P0455","P0456","P0441","P0442","P0101","P0128","P0401","P0562","P0700","P0299"],"hyundai":["P0420","P0430","P0171","P0174","P0300","P0455","P0456","P0441","P0442","P0101","P0128","P0401","P0562","P0700","P0299"],"kia":["P0420","P0430","P0171","P0174","P0300","P0455","P0456","P0441","P0442","P0101","P0128","P0401","P0562","P0700","P0299"]};
+  var codeTitles = {"P0010":"Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis","P0011":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt","P0012":"Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt","P0013":"Nockenwellenverstellung (Auslass) Bank 1 – Steuerkreis","P0014":"Nockenwellenverstellung (Auslass) Bank 1 – Position zu weit vorgestellt","P0016":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor A","P0017":"Nockenwellen-/Kurbelwellen-Korrelation Bank 1 Sensor B","P0020":"Nockenwellenverstellung (Einlass) Bank 2 – Steuerkreis","P0021":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit vorgestellt","P0022":"Nockenwellenverstellung (Einlass) Bank 2 – zu weit zurückgestellt","P0030":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Steuerkreis","P0031":"Lambda-Sonde B1S1 Heizkreis – Signal zu niedrig","P0032":"Lambda-Sonde B1S1 Heizkreis – Signal zu hoch","P0036":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Steuerkreis","P0037":"Lambda-Sonde B1S2 Heizkreis – Signal zu niedrig","P0038":"Lambda-Sonde B1S2 Heizkreis – Signal zu hoch","P0068":"Drosselklappe/MAP-Sensor – Korrelation","P0100":"Luftmassenmesser (LMM) – Schaltkreis Fehlfunktion","P0101":"Luftmassenmesser (LMM) – Signal außerhalb des Bereichs","P0102":"Luftmassenmesser – Signal zu niedrig","P0103":"Luftmassenmesser – Signal zu hoch","P0105":"MAP-Sensor – Schaltkreis Fehlfunktion","P0106":"MAP-Sensor – Signal außerhalb Bereich","P0107":"MAP-Sensor – Signal zu niedrig","P0108":"MAP-Sensor – Signal zu hoch","P0110":"Ansauglufttemperatursensor (IAT) – Schaltkreis Fehlfunktion","P0111":"Ansauglufttemperatursensor – Signal außerhalb Bereich","P0112":"Ansauglufttemperatursensor – Signal zu niedrig","P0113":"Ansauglufttemperatursensor – Signal zu hoch","P0115":"Kühlmitteltemperatursensor (ECT) – Schaltkreis Fehlfunktion","P0116":"Kühlmitteltemperatursensor – Signal nicht plausibel","P0117":"Kühlmitteltemperatursensor – Signal zu niedrig","P0118":"Kühlmitteltemperatursensor – Signal zu hoch","P0121":"Drosselklappensensor (TPS) – Signal nicht plausibel","P0122":"Drosselklappensensor – Signal zu niedrig","P0123":"Drosselklappensensor – Signal zu hoch","P0125":"Kühlmitteltemperatur unzureichend für Gemischregelung","P0128":"Kühlmitteltemperatur unter Thermostat-Regulierbereich","P0130":"Lambda-Sonde Bank 1 Sensor 1 – Schaltkreis Fehlfunktion","P0131":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu niedrig","P0132":"Lambda-Sonde Bank 1 Sensor 1 – Spannung zu hoch","P0133":"Lambda-Sonde Bank 1 Sensor 1 – langsame Reaktion","P0134":"Lambda-Sonde Bank 1 Sensor 1 – keine Aktivität","P0135":"Lambda-Sonde Bank 1 Sensor 1 – Heizkreis Fehlfunktion","P0136":"Lambda-Sonde Bank 1 Sensor 2 – Schaltkreis Fehlfunktion","P0137":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu niedrig","P0138":"Lambda-Sonde Bank 1 Sensor 2 – Spannung zu hoch","P0141":"Lambda-Sonde Bank 1 Sensor 2 – Heizkreis Fehlfunktion","P0155":"Lambda-Sonde Bank 2 Sensor 1 – Heizkreis Fehlfunktion","P0161":"Lambda-Sonde Bank 2 Sensor 2 – Heizkreis Fehlfunktion","P0170":"Kraftstofftrimmung Fehlfunktion – Bank 1","P0171":"Gemisch zu mager – Bank 1","P0172":"Gemisch zu fett – Bank 1","P0174":"Gemisch zu mager – Bank 2","P0175":"Gemisch zu fett – Bank 2","P0190":"Kraftstoffdrucksensor – Schaltkreis Fehlfunktion","P0191":"Kraftstoffdrucksensor – Signal außerhalb Bereich","P0192":"Kraftstoffdrucksensor – Signal zu niedrig","P0193":"Kraftstoffdrucksensor – Signal zu hoch","P0201":"Einspritzdüse Zylinder 1 – Steuerkreis","P0202":"Einspritzdüse Zylinder 2 – Steuerkreis","P0203":"Einspritzdüse Zylinder 3 – Steuerkreis","P0204":"Einspritzdüse Zylinder 4 – Steuerkreis","P0205":"Einspritzdüse Zylinder 5 – Steuerkreis","P0206":"Einspritzdüse Zylinder 6 – Steuerkreis","P0222":"Drosselklappensensor 2 – Signal zu niedrig","P0223":"Drosselklappensensor 2 – Signal zu hoch","P0230":"Kraftstoffpumpen-Relais – Steuerkreis","P0234":"Ladedruckregelung – Ladedruck zu hoch","P0235":"Ladedrucksensor – Schaltkreis Fehlfunktion","P0251":"Einspritzpumpe – Regelabweichung (Diesel)","P0261":"Einspritzdüse Zyl. 1 – Signal zu niedrig","P0262":"Einspritzdüse Zyl. 1 – Signal zu hoch","P0299":"Ladedruckregelung – Ladedruck zu niedrig","P0300":"Zufällige/multiple Zündaussetzer erkannt","P0301":"Zündaussetzer Zylinder 1","P0302":"Zündaussetzer Zylinder 2","P0303":"Zündaussetzer Zylinder 3","P0304":"Zündaussetzer Zylinder 4","P0305":"Zündaussetzer Zylinder 5","P0306":"Zündaussetzer Zylinder 6","P0307":"Zündaussetzer Zylinder 7","P0308":"Zündaussetzer Zylinder 8","P0325":"Klopfsensor 1 – Schaltkreis Fehlfunktion","P0326":"Klopfsensor 1 – Signal außerhalb Bereich","P0327":"Klopfsensor 1 – Signal zu niedrig","P0328":"Klopfsensor 1 – Signal zu hoch","P0335":"Kurbelwellensensor – Schaltkreis Fehlfunktion","P0336":"Kurbelwellensensor – Signal außerhalb Bereich","P0340":"Nockenwellensensor Bank 1 – Schaltkreis Fehlfunktion","P0341":"Nockenwellensensor Bank 1 – Signal außerhalb Bereich","P0345":"Nockenwellensensor Bank 2 – Schaltkreis Fehlfunktion","P0351":"Zündspule A – Steuerkreis","P0352":"Zündspule B – Steuerkreis","P0353":"Zündspule C – Steuerkreis","P0354":"Zündspule D – Steuerkreis","P0380":"Glühkerzen-Steuerkreis – Fehlfunktion","P0381":"Glühkerzen-Kontrollleuchte – Steuerkreis Fehlfunktion","P0400":"AGR-System – Durchfluss Fehlfunktion","P0401":"AGR-System – Durchfluss unzureichend","P0402":"AGR-System – Durchfluss zu hoch","P0403":"AGR-Ventil Steuerkreis Fehlfunktion","P0404":"AGR-Ventil – Bereich/Leistung außerhalb Spezifikation","P0405":"AGR-Positionssensor – Signal zu niedrig","P0410":"Sekundärluftsystem – Fehlfunktion","P0411":"Sekundärluftsystem – Durchfluss nicht korrekt","P0412":"Sekundärluftventil – Steuerkreis Fehlfunktion","P0420":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)","P0421":"Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)","P0430":"Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)","P0440":"EVAP-System Fehlfunktion","P0441":"EVAP-System – Spülstrom nicht korrekt","P0442":"EVAP-System – kleine Leckage erkannt","P0443":"EVAP-Spülventil Steuerkreis Fehlfunktion","P0446":"EVAP-Entlüftungsventil Steuerkreis Fehlfunktion","P0455":"EVAP-System – große Leckage erkannt","P0456":"EVAP-System – sehr kleine Leckage erkannt","P0460":"Kraftstoffstandsensor – Schaltkreis Fehlfunktion","P0461":"Kraftstoffstandsensor – Signal außerhalb Bereich","P0462":"Kraftstoffstandsensor – Signal zu niedrig","P0463":"Kraftstoffstandsensor – Signal zu hoch","P0480":"Kühlerlüfter 1 – Steuerkreis Fehlfunktion","P0481":"Kühlerlüfter 2 – Steuerkreis Fehlfunktion","P0496":"EVAP-System – Spülstrom zu hoch (Motor aus)","P0497":"EVAP-System – Spülstrom zu niedrig","P0500":"Geschwindigkeitssensor – Fehlfunktion","P0501":"Geschwindigkeitssensor – Signal außerhalb Bereich","P0502":"Geschwindigkeitssensor – Signal zu niedrig","P0503":"Geschwindigkeitssensor – Signal intermittierend","P0505":"Leerlaufregelung – Fehlfunktion","P0506":"Leerlaufdrehzahl zu niedrig","P0507":"Leerlaufdrehzahl zu hoch","P0530":"Klimakompressor-Drucksensor – Schaltkreis Fehlfunktion","P0531":"Klimakompressor-Drucksensor – Signal außerhalb Bereich","P0545":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu niedrig","P0546":"Abgastemperatursensor Bank 1 Sensor 1 – Signal zu hoch","P0562":"Systemspannung zu niedrig","P0563":"Systemspannung zu hoch","P0597":"Thermostat-Heizelement – Steuerkreis offen","P0600":"CAN-Bus – Serieller Kommunikationsfehler","P0601":"Interner Steuergerät-Speicherfehler (Prüfsumme)","P0602":"Steuergerät – Programmierfehler","P0627":"Kraftstoffpumpen-Steuerkreis – offen","P0700":"Getriebesteuerung – Fehlfunktion erkannt","P0715":"Turbinendrehzahlsensor – Schaltkreis Fehlfunktion","P0720":"Abtriebsdrehzahlsensor – Schaltkreis Fehlfunktion","P0730":"Falsches Übersetzungsverhältnis","P0740":"Drehmomentwandler-Überbrückungskupplung – Schaltkreis Fehlfunktion","P0750":"Schaltmagnetventil A – Fehlfunktion","P0755":"Schaltmagnetventil B – Fehlfunktion"};
+
+  function escAttr(s){
+    return String(s||"")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
   }
 
   var codeOnly = document.getElementById('codeOnly');
   var openCode = document.getElementById('openCode');
 
   var brandSel = document.getElementById('brandSelect');
-  var brandCode = document.getElementById('brandCode');
+  var brandCodeSelect = document.getElementById('brandCodeSelect');
   var openBrand = document.getElementById('openBrandCode');
+
+  var toggleManual = document.getElementById('toggleBrandManual');
+  var manualRow = document.getElementById('brandManualRow');
+  var manualInput = document.getElementById('brandCodeManual');
+
+  function fillBrandCodes(){
+    var b = brandSel.value;
+    var list = (popularByBrand[b] || []);
+    // Reset select
+    brandCodeSelect.innerHTML = '<option value="">Code wählen…</option>' + list.map(function(code){
+      var t = codeTitles[code] || '';
+      return '<option value="'+code+'">'+escAttr(code + ' – ' + t)+'</option>';
+    }).join('');
+  }
+
+  function updateBrandOpenState(){
+    if(!brandSel.value){
+      openBrand.disabled = true;
+      return;
+    }
+
+    var code = '';
+    if(manualRow.style.display !== 'none'){
+      code = extractObd(manualInput.value);
+    }
+    if(!code){
+      code = extractObd(brandCodeSelect.value);
+    }
+    openBrand.disabled = !isObd(code);
+  }
 
   function setBrandEnabled(){
     var enabled = !!brandSel.value;
-    brandCode.disabled = !enabled;
-    openBrand.disabled = !enabled;
-    if(enabled) brandCode.focus();
+    brandCodeSelect.disabled = !enabled;
+    toggleManual.disabled = !enabled;
+    manualInput.disabled = !enabled;
+
+    if(!enabled){
+      manualRow.style.display = 'none';
+      toggleManual.setAttribute('aria-expanded','false');
+      toggleManual.textContent = 'Anderen Code eingeben';
+      manualInput.value = '';
+      brandCodeSelect.value = '';
+      updateBrandOpenState();
+      return;
+    }
+
+    fillBrandCodes();
+    brandCodeSelect.value = '';
+    updateBrandOpenState();
+    // Focus sensible default
+    brandCodeSelect.focus();
   }
 
   function openGeneric(){
-    var v = norm(codeOnly.value);
-    if(!isObd(v)){
+    var code = extractObd(codeOnly.value);
+    if(!isObd(code)){
       toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
       codeOnly.focus();
       return;
     }
-    window.location.href = "" + '/code/' + v + '/';
+    window.location.href = "" + '/code/' + code + '/';
   }
 
   function openBrandCode(){
@@ -391,39 +465,83 @@
       brandSel.focus();
       return;
     }
-    var v = norm(brandCode.value);
-    if(!isObd(v)){
+
+    // Prefer manual input if visible + has something
+    var code = '';
+    if(manualRow.style.display !== 'none'){
+      code = extractObd(manualInput.value);
+    }
+    if(!code){
+      code = extractObd(brandCodeSelect.value);
+    }
+
+    if(!isObd(code)){
       toast('Bitte einen gültigen OBD-II Code auswählen (z. B. P0420).');
-      brandCode.focus();
+      brandCodeSelect.focus();
       return;
     }
-    window.location.href = "" + '/marke/' + b + '/code/' + v + '/';
+
+    window.location.href = "" + '/marke/' + b + '/code/' + code + '/';
+  }
+
+  function toggleBrandManual(){
+    var open = manualRow.style.display !== 'none';
+    manualRow.style.display = open ? 'none' : 'flex';
+    toggleManual.setAttribute('aria-expanded', String(!open));
+    toggleManual.textContent = open ? 'Anderen Code eingeben' : 'Zurück zur Auswahl';
+    if(!open){
+      manualInput.focus();
+    }else{
+      manualInput.value = '';
+      brandCodeSelect.focus();
+    }
+    updateBrandOpenState();
   }
 
   openCode.addEventListener('click', openGeneric);
   codeOnly.addEventListener('keydown', function(e){ if(e.key==='Enter') openGeneric(); });
 
   openBrand.addEventListener('click', openBrandCode);
-  brandCode.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
+  brandCodeSelect.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
+  manualInput.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
 
+  brandCodeSelect.addEventListener('change', updateBrandOpenState);
+  manualInput.addEventListener('input', updateBrandOpenState);
   brandSel.addEventListener('change', setBrandEnabled);
+  toggleManual.addEventListener('click', toggleBrandManual);
 
   // Prefill support: ?code=P0420  or ?brand=vw&code=P0420
   var params = new URLSearchParams(window.location.search);
   var bParam = params.get('brand');
   var cParam = params.get('code');
+
   if(bParam){
     brandSel.value = bParam;
     setBrandEnabled();
   }else{
     setBrandEnabled();
   }
+
   if(cParam){
-    var c = norm(cParam);
-    if(bParam){
-      brandCode.value = c;
-    }else{
-      codeOnly.value = c;
+    var code = extractObd(cParam);
+    if(code){
+      if(bParam){
+        // If code is in curated list, select it. Otherwise open manual.
+        var found = false;
+        Array.from(brandCodeSelect.options).forEach(function(o){
+          if(o.value === code) found = true;
+        });
+        if(found){
+          brandCodeSelect.value = code;
+        }else{
+          manualRow.style.display = 'flex';
+          toggleManual.setAttribute('aria-expanded','true');
+          toggleManual.textContent = 'Zurück zur Auswahl';
+          manualInput.value = code;
+        }
+      }else{
+        codeOnly.value = code;
+      }
     }
   }
 })();

@@ -40,15 +40,47 @@
           <h2>Code auswählen</h2>
           <div class="panel-row">
             <div class="brand-fixed" aria-label="Marke">Ford</div>
-            <div class="search-box wide">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="brandCode" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+            <div class="select-wrap wide">
+              <select id="popularSelect" class="select" aria-label="Häufige Fehlercodes">
+                <option value="">Häufige Codes wählen…</option>
+<option value="P0420">P0420 – Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</option>
+<option value="P0171">P0171 – Gemisch zu mager – Bank 1</option>
+<option value="P0300">P0300 – Zufällige/multiple Zündaussetzer erkannt</option>
+<option value="P0455">P0455 – EVAP-System – große Leckage erkannt</option>
+<option value="P0456">P0456 – EVAP-System – sehr kleine Leckage erkannt</option>
+<option value="P0442">P0442 – EVAP-System – kleine Leckage erkannt</option>
+<option value="P0101">P0101 – Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</option>
+<option value="P0128">P0128 – Kühlmitteltemperatur unter Thermostat-Regulierbereich</option>
+<option value="P0401">P0401 – AGR-System – Durchfluss unzureichend</option>
+<option value="P0500">P0500 – Geschwindigkeitssensor – Fehlfunktion</option>
+<option value="P0562">P0562 – Systemspannung zu niedrig</option>
+<option value="P0700">P0700 – Getriebesteuerung – Fehlfunktion erkannt</option>
+<option value="P0421">P0421 – Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)</option>
+<option value="P0410">P0410 – Sekundärluftsystem – Fehlfunktion</option>
+<option value="P0299">P0299 – Ladedruckregelung – Ladedruck zu niedrig</option>
+              </select>
             </div>
-            <button class="btn primary" type="button" id="go">Öffnen</button>
+            <button class="btn primary" type="button" id="goPopular">Öffnen</button>
             <a class="btn" href="/marken/">Zur Markenübersicht</a>
           </div>
 
-          <datalist id="codeList">
+          <div class="panel-subrow">
+            <button class="link" type="button" id="toggleAllCodes" aria-expanded="false">Alle Codes durchsuchen</button>
+          </div>
+
+          <div class="panel-row" id="allCodesRow" style="display:none">
+            <div class="select-wrap" aria-hidden="true" style="visibility:hidden">
+              <select class="select" tabindex="-1"><option></option></select>
+            </div>
+            <div class="search-box wide">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="manualCode" placeholder="oder Code eintippen (z. B. P0420)" autocomplete="off" aria-label="OBD-II Code (manuell)">
+            </div>
+            <button class="btn primary" type="button" id="goManual">Öffnen</button>
+            <div></div>
+          </div>
+
+          <datalist id="codeListAll">
             <option value="P0010" label="Variable Nockenwellenverstellung (Einlass) Bank 1 – Steuerkreis"></option>
 <option value="P0011" label="Nockenwellenverstellung (Einlass) Bank 1 – zu weit vorgestellt"></option>
 <option value="P0012" label="Nockenwellenverstellung (Einlass) Bank 1 – zu weit zurückgestellt"></option>
@@ -213,7 +245,7 @@
     <div class="ad-slot"><!-- Ad placeholder --></div>
 
     <h2 class="section-title">Häufig bei Ford gesucht</h2>
-    <ul class="code-list"><li><a href="/marke/ford/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high"></span></a></li><li><a href="/marke/ford/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/marke/ford/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/marke/ford/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0174/"><span class="code-badge">P0174</span><span class="code-title">Gemisch zu mager – Bank 2</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0430/"><span class="code-badge">P0430</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 2)</span><span class="urgency-dot medium"></span></a></li></ul>
+    <ul class="code-list"><li><a href="/marke/ford/code/P0420/"><span class="code-badge">P0420</span><span class="code-title">Katalysator Wirkungsgrad unter Schwellenwert (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0171/"><span class="code-badge">P0171</span><span class="code-title">Gemisch zu mager – Bank 1</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0300/"><span class="code-badge">P0300</span><span class="code-title">Zufällige/multiple Zündaussetzer erkannt</span><span class="urgency-dot high"></span></a></li><li><a href="/marke/ford/code/P0455/"><span class="code-badge">P0455</span><span class="code-title">EVAP-System – große Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/marke/ford/code/P0456/"><span class="code-badge">P0456</span><span class="code-title">EVAP-System – sehr kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/marke/ford/code/P0442/"><span class="code-badge">P0442</span><span class="code-title">EVAP-System – kleine Leckage erkannt</span><span class="urgency-dot low"></span></a></li><li><a href="/marke/ford/code/P0101/"><span class="code-badge">P0101</span><span class="code-title">Luftmassenmesser (LMM) – Signal außerhalb des Bereichs</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0128/"><span class="code-badge">P0128</span><span class="code-title">Kühlmitteltemperatur unter Thermostat-Regulierbereich</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0401/"><span class="code-badge">P0401</span><span class="code-title">AGR-System – Durchfluss unzureichend</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0500/"><span class="code-badge">P0500</span><span class="code-title">Geschwindigkeitssensor – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0562/"><span class="code-badge">P0562</span><span class="code-title">Systemspannung zu niedrig</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0700/"><span class="code-badge">P0700</span><span class="code-title">Getriebesteuerung – Fehlfunktion erkannt</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0421/"><span class="code-badge">P0421</span><span class="code-title">Katalysator Wirkungsgrad – Aufwärmphase (Bank 1)</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0410/"><span class="code-badge">P0410</span><span class="code-title">Sekundärluftsystem – Fehlfunktion</span><span class="urgency-dot medium"></span></a></li><li><a href="/marke/ford/code/P0299/"><span class="code-badge">P0299</span><span class="code-title">Ladedruckregelung – Ladedruck zu niedrig</span><span class="urgency-dot medium"></span></a></li></ul>
 
     <div class="content-section">
       <h2>Tipps</h2>
@@ -304,28 +336,76 @@
 
 <script>
 (function(){
-  function norm(q){ return String(q||"").trim().toUpperCase().replace(/s+/g,"").replace(/[^A-Z0-9]/g, ""); }
-  function isObd(q){ return /^[PCBU]d{4}$/.test(q); }
+  function extractObd(input){
+    var cleaned = String(input||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    var m = cleaned.match(/[PCBU]d{4}/);
+    return m ? m[0] : "";
+  }
+  function isObd(code){ return /^[PCBU]d{4}$/.test(code); }
   function toast(msg){
     if(window.showToast) window.showToast(msg);
     else alert(msg);
   }
 
-  var inp = document.getElementById('brandCode');
-  var go = document.getElementById('go');
+  var popularSelect = document.getElementById('popularSelect');
+  var goPopular = document.getElementById('goPopular');
 
-  function open(){
-    var v = norm(inp.value);
-    if(!isObd(v)){
-      toast('Bitte einen gültigen OBD-II Code wählen (z. B. P0420).');
-      inp.focus();
+  var toggleAll = document.getElementById('toggleAllCodes');
+  var allRow = document.getElementById('allCodesRow');
+  var manual = document.getElementById('manualCode');
+  var goManual = document.getElementById('goManual');
+
+  function openWith(code){
+    if(!isObd(code)){
+      toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
       return;
     }
-    window.location.href = "/marke/ford/code/" + v + '/';
+    window.location.href = "/marke/ford/code/" + code + '/';
   }
 
-  go.addEventListener('click', open);
-  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') open(); });
+  function openPopular(){
+    var code = extractObd(popularSelect.value);
+    if(!code){
+      toast('Bitte zuerst einen Code auswählen.');
+      popularSelect.focus();
+      return;
+    }
+    openWith(code);
+  }
+
+  function openManual(){
+    var code = extractObd(manual.value);
+    if(!code){
+      toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
+      manual.focus();
+      return;
+    }
+    openWith(code);
+  }
+
+  function toggleAllCodes(){
+    var open = allRow.style.display !== 'none';
+    allRow.style.display = open ? 'none' : 'flex';
+    toggleAll.setAttribute('aria-expanded', String(!open));
+    toggleAll.textContent = open ? 'Alle Codes durchsuchen' : 'Zurück (nur häufige Codes)';
+    if(!open){
+      // enable dropdown suggestions only when explicitly opened
+      manual.setAttribute('list','codeListAll');
+      manual.focus();
+    }else{
+      manual.removeAttribute('list');
+      manual.value = '';
+      popularSelect.focus();
+    }
+  }
+
+  goPopular.addEventListener('click', openPopular);
+  popularSelect.addEventListener('keydown', function(e){ if(e.key==='Enter') openPopular(); });
+
+  goManual.addEventListener('click', openManual);
+  manual.addEventListener('keydown', function(e){ if(e.key==='Enter') openManual(); });
+
+  toggleAll.addEventListener('click', toggleAllCodes);
 })();
 </script>
 </body>

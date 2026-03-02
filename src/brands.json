@@ -1,14 +1,295 @@
 [
-  {"slug":"vw","name":"Volkswagen","aliases":["volkswagen","vw"]},
-  {"slug":"audi","name":"Audi","aliases":["audi"]},
-  {"slug":"bmw","name":"BMW","aliases":["bmw"]},
-  {"slug":"mercedes","name":"Mercedes-Benz","aliases":["mercedes","mercedes benz","mercedes-benz","mb"]},
-  {"slug":"porsche","name":"Porsche","aliases":["porsche"]},
-  {"slug":"skoda","name":"Škoda","aliases":["skoda","škoda"]},
-  {"slug":"seat","name":"SEAT","aliases":["seat"]},
-  {"slug":"opel","name":"Opel","aliases":["opel"]},
-  {"slug":"ford","name":"Ford","aliases":["ford"]},
-  {"slug":"toyota","name":"Toyota","aliases":["toyota"]},
-  {"slug":"hyundai","name":"Hyundai","aliases":["hyundai"]},
-  {"slug":"kia","name":"Kia","aliases":["kia"]}
+  {
+    "slug": "vw",
+    "name": "Volkswagen",
+    "aliases": [
+      "volkswagen",
+      "vw"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0299",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "audi",
+    "name": "Audi",
+    "aliases": [
+      "audi"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0299",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "bmw",
+    "name": "BMW",
+    "aliases": [
+      "bmw"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0300",
+      "P0011",
+      "P0016",
+      "P0017",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "mercedes",
+    "name": "Mercedes-Benz",
+    "aliases": [
+      "mercedes",
+      "mercedes benz",
+      "mercedes-benz",
+      "mb"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0410",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "porsche",
+    "name": "Porsche",
+    "aliases": [
+      "porsche"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700",
+      "P0016"
+    ]
+  },
+  {
+    "slug": "skoda",
+    "name": "Škoda",
+    "aliases": [
+      "skoda",
+      "škoda"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0299",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "seat",
+    "name": "SEAT",
+    "aliases": [
+      "seat"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0299",
+      "P0101",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0440",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700"
+    ]
+  },
+  {
+    "slug": "opel",
+    "name": "Opel",
+    "aliases": [
+      "opel"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0171",
+      "P0300",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0101",
+      "P0128",
+      "P0401",
+      "P0500",
+      "P0562",
+      "P0700",
+      "P0421",
+      "P0410",
+      "P0299"
+    ]
+  },
+  {
+    "slug": "ford",
+    "name": "Ford",
+    "aliases": [
+      "ford"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0171",
+      "P0300",
+      "P0455",
+      "P0456",
+      "P0442",
+      "P0101",
+      "P0128",
+      "P0401",
+      "P0500",
+      "P0562",
+      "P0700",
+      "P0421",
+      "P0410",
+      "P0299"
+    ]
+  },
+  {
+    "slug": "toyota",
+    "name": "Toyota",
+    "aliases": [
+      "toyota"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0455",
+      "P0456",
+      "P0441",
+      "P0442",
+      "P0101",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700",
+      "P0299"
+    ]
+  },
+  {
+    "slug": "hyundai",
+    "name": "Hyundai",
+    "aliases": [
+      "hyundai"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0455",
+      "P0456",
+      "P0441",
+      "P0442",
+      "P0101",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700",
+      "P0299"
+    ]
+  },
+  {
+    "slug": "kia",
+    "name": "Kia",
+    "aliases": [
+      "kia"
+    ],
+    "popularCodes": [
+      "P0420",
+      "P0430",
+      "P0171",
+      "P0174",
+      "P0300",
+      "P0455",
+      "P0456",
+      "P0441",
+      "P0442",
+      "P0101",
+      "P0128",
+      "P0401",
+      "P0562",
+      "P0700",
+      "P0299"
+    ]
+  }
 ]
