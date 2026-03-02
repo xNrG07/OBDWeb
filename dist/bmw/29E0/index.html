@@ -126,6 +126,7 @@
     clearTimeout(window.__toastT);
     window.__toastT = setTimeout(function(){ t.classList.remove('show'); }, 1800);
   }
+  window.showToast = showToast;
 
   // Copy buttons
   document.querySelectorAll('[data-copy]').forEach(function(btn){

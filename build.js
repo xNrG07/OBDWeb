@@ -85,6 +85,11 @@ const brandOverrides = Array.isArray(brandOverridesRaw.overrides) ? brandOverrid
 
 const css = fs.readFileSync(path.join(SRC, "style.css"), "utf-8");
 
+// Pre-rendered datalist options for all generic OBD-II codes
+const codeOptionsAll = codes
+  .map((c) => `<option value="${c.code}" label="${esc(c.title)}"></option>`)
+  .join("\n");
+
 console.log(
   `Building ${codes.length} OBD-II + ${bmwCodes.length} BMW pages + ${brands.length} brand pages...`
 );
@@ -210,6 +215,7 @@ const commonClientJs = `
     clearTimeout(window.__toastT);
     window.__toastT = setTimeout(function(){ t.classList.remove('show'); }, 1800);
   }
+  window.showToast = showToast;
 
   // Copy buttons
   document.querySelectorAll('[data-copy]').forEach(function(btn){
@@ -533,7 +539,7 @@ function buildIndex() {
   const description = `OBD-II Fehlercodes schnell finden und verstehen (Bedeutung, Symptome, Ursachen). Zusätzlich: Marken-Fokus für DACH (VW, Audi, BMW, Mercedes, Škoda, …).`;
 
   const brandOptions = [
-    `<option value="">Alle Marken</option>`,
+    `<option value="">Marke wählen…</option>`,
     ...brands.map((b) => `<option value="${esc(b.slug)}">${esc(b.name)}</option>`),
   ].join("\n");
 
@@ -559,25 +565,43 @@ ${header()}
 <main>
   <div class="container">
     <div class="search-section">
-      <h1>Fehlercode nachschlagen (OBD-II) – optional nach Marke</h1>
-      <p>Code eingeben (z.&nbsp;B. <strong>P0420</strong>) oder Marke auswählen (DACH-Fokus).</p>
+      <h1>OBD-II Fehlercodes nachschlagen</h1>
+      <p>Wähle entweder direkt einen Code – oder öffne ihn im Kontext einer Marke (DACH‑Fokus).</p>
 
-      <div class="search-controls" aria-label="Suche">
-        <div class="select-wrap">
-          <select id="brand" class="select" aria-label="Marke">
-            ${brandOptions}
-          </select>
+      <div class="search-panels" aria-label="Suchen">
+        <div class="panel">
+          <h2>Nur Fehlercode</h2>
+          <div class="panel-row">
+            <div class="search-box wide">
+              ${searchIconSvg}
+              <input type="text" id="codeOnly" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+            </div>
+            <button class="btn primary" type="button" id="openCode">Öffnen</button>
+          </div>
+          <p class="panel-note">Für <strong>P0xxx</strong> ist die Grundbedeutung standardisiert (OBD‑II).</p>
         </div>
-        <div class="search-box wide">
-          ${searchIconSvg}
-          <input type="text" id="search" placeholder="Fehlercode oder Begriff…" autocomplete="off" aria-label="Suchen">
-          <div class="search-results" id="results"></div>
+
+        <div class="panel">
+          <h2>Marke + Fehlercode</h2>
+          <div class="panel-row">
+            <div class="select-wrap">
+              <select id="brandSelect" class="select" aria-label="Marke">
+                ${brandOptions}
+              </select>
+            </div>
+            <div class="search-box wide">
+              ${searchIconSvg}
+              <input type="text" id="brandCode" list="codeList" placeholder="Code wählen (z. B. P0420)" autocomplete="off" aria-label="Fehlercode nach Marke" disabled>
+            </div>
+            <button class="btn primary" type="button" id="openBrandCode" disabled>Öffnen</button>
+          </div>
+          <p class="panel-note">Marken unterscheiden sich meist in <em>typischen Ursachen</em> und Diagnosewegen – nicht in der Code‑Grundbedeutung.</p>
         </div>
       </div>
 
-      <p class="note" style="margin-top:0.9rem">
-        Hinweis: <strong>P0xxx</strong> Codes sind standardisiert (OBD-II). Hersteller-/modellabhängig sind meist typische Ursachen und Diagnosewege.
-      </p>
+      <datalist id="codeList">
+        ${codeOptionsAll}
+      </datalist>
     </div>
 
     <div class="ad-slot"><!-- Ad placeholder --></div>
@@ -616,122 +640,84 @@ ${header()}
 
 ${footer()}
 ${toastHtml()}
+${commonClientJs}
 
 <script>
 (function(){
-  var data = ${JSON.stringify(searchData)};
-  var brands = ${JSON.stringify(brands)};
-
-  function escHtml(s){
-    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
-  }
-
   function norm(q){
     return String(q||"").trim().toUpperCase().replace(/\s+/g,"").replace(/[^A-Z0-9]/g, "");
   }
-
-  function isObdCode(q){
-    return /^[PCBU]\d{4}$/.test(q);
+  function isObd(q){ return /^[PCBU]\d{4}$/.test(q); }
+  function toast(msg){
+    if(window.showToast) window.showToast(msg);
+    else alert(msg);
   }
 
-  function findBrand(slug){
-    return brands.find(function(b){ return b.slug === slug; });
+  var codeOnly = document.getElementById('codeOnly');
+  var openCode = document.getElementById('openCode');
+
+  var brandSel = document.getElementById('brandSelect');
+  var brandCode = document.getElementById('brandCode');
+  var openBrand = document.getElementById('openBrandCode');
+
+  function setBrandEnabled(){
+    var enabled = !!brandSel.value;
+    brandCode.disabled = !enabled;
+    openBrand.disabled = !enabled;
+    if(enabled) brandCode.focus();
   }
 
-  var input = document.getElementById("search");
-  var box = document.getElementById("results");
-  var brandSel = document.getElementById("brand");
+  function openGeneric(){
+    var v = norm(codeOnly.value);
+    if(!isObd(v)){
+      toast('Bitte einen gültigen OBD-II Code eingeben (z. B. P0420).');
+      codeOnly.focus();
+      return;
+    }
+    window.location.href = ${JSON.stringify(BASE_PATH)} + '/code/' + v + '/';
+  }
 
-  function buildUrlForObd(code){
+  function openBrandCode(){
     var b = brandSel.value;
-    if(b){
-      return ${JSON.stringify(BASE_PATH)} + '/marke/' + b + '/code/' + code + '/';
-    }
-    return ${JSON.stringify(BASE_PATH)} + '/code/' + code + '/';
-  }
-
-  function openIfExact(q){
-    var n = norm(q);
-    if(!n) return false;
-    if(isObdCode(n)){
-      window.location.href = buildUrlForObd(n);
-      return true;
-    }
-    // BMW: only if brand == bmw or brand not selected
-    if(/^[0-9A-F]{4,6}$/.test(n)){
-      var b = brandSel.value;
-      if(!b || b === 'bmw'){
-        var hit = data.find(function(d){ return d.type==='bmw' && d.c.toUpperCase()===n; });
-        if(hit){ window.location.href = hit.u; return true; }
-      }
-    }
-    return false;
-  }
-
-  input.addEventListener("keydown", function(e){
-    if(e.key === 'Enter'){
-      if(openIfExact(input.value)) return;
-    }
-  });
-
-  function render(){
-    var qRaw = input.value;
-    var q = norm(qRaw);
-    if(qRaw.trim().length < 1){
-      box.className = "search-results";
-      box.innerHTML = "";
+    if(!b){
+      toast('Bitte zuerst eine Marke auswählen.');
+      brandSel.focus();
       return;
     }
-
-    // If user typed an OBD code, prioritize that
-    if(isObdCode(q)){
-      var url = buildUrlForObd(q);
-      var b = brandSel.value;
-      var brandName = b ? (findBrand(b)||{name:b}).name : '';
-      box.innerHTML = '<a href="' + url + '"><strong>' + escHtml(q) + '</strong>' + escHtml(brandName ? (' ' + brandName) : ' OBD-II') + '</a>';
-      box.className = "search-results open";
+    var v = norm(brandCode.value);
+    if(!isObd(v)){
+      toast('Bitte einen gültigen OBD-II Code auswählen (z. B. P0420).');
+      brandCode.focus();
       return;
     }
-
-    // Otherwise search in titles / brands / guides
-    var qU = qRaw.trim().toUpperCase();
-    var matches = data.filter(function(d){
-      return (d.c && d.c.toUpperCase().indexOf(qU) > -1) || (d.t && d.t.toUpperCase().indexOf(qU) > -1);
-    }).slice(0, 15);
-
-    box.innerHTML = matches.length === 0
-      ? '<div class="no-results">Kein Treffer.</div>'
-      : matches.map(function(x){
-          return '<a href="' + x.u + '"><strong>' + escHtml(x.c || '') + '</strong>' + escHtml(x.t) + '</a>';
-        }).join("");
-
-    box.className = "search-results open";
+    window.location.href = ${JSON.stringify(BASE_PATH)} + '/marke/' + b + '/code/' + v + '/';
   }
 
-  input.addEventListener("input", render);
-  brandSel.addEventListener("change", function(){
-    // re-render to update brand-targeted code link
-    if(input.value.trim()) render();
-  });
+  openCode.addEventListener('click', openGeneric);
+  codeOnly.addEventListener('keydown', function(e){ if(e.key==='Enter') openGeneric(); });
 
-  document.addEventListener("click", function(e){
-    if(!e.target.closest(".search-controls")) box.className = "search-results";
-  });
+  openBrand.addEventListener('click', openBrandCode);
+  brandCode.addEventListener('keydown', function(e){ if(e.key==='Enter') openBrandCode(); });
 
-  input.addEventListener("focus", function(){
-    if(box.innerHTML) box.className = "search-results open";
-  });
+  brandSel.addEventListener('change', setBrandEnabled);
 
-  // Support ?q= and ?brand=
+  // Prefill support: ?code=P0420  or ?brand=vw&code=P0420
   var params = new URLSearchParams(window.location.search);
-  var qParam = params.get("q");
-  var bParam = params.get("brand");
+  var bParam = params.get('brand');
+  var cParam = params.get('code');
   if(bParam){
     brandSel.value = bParam;
+    setBrandEnabled();
+  }else{
+    setBrandEnabled();
   }
-  if(qParam){
-    input.value = qParam;
-    render();
+  if(cParam){
+    var c = norm(cParam);
+    if(bParam){
+      brandCode.value = c;
+    }else{
+      codeOnly.value = c;
+    }
   }
 })();
 </script>
@@ -839,17 +825,25 @@ ${header()}
       <h1>${esc(b.name)} – OBD-II Fehlercodes</h1>
       <p class="short-meaning">Suche einen Code (z. B. <strong>P0420</strong>). Du landest automatisch auf der passenden Marken‑Code‑Seite.</p>
 
-      <div class="search-controls" style="margin-top:1rem">
-        <div class="select-wrap">
-          <select class="select" disabled aria-label="Marke">
-            <option>${esc(b.name)}</option>
-          </select>
+      <div class="search-panels" style="margin-top:1rem">
+        <div class="panel" style="max-width:680px;margin:0 auto">
+          <h2>Code auswählen</h2>
+          <div class="panel-row">
+            <div class="brand-fixed" aria-label="Marke">${esc(b.name)}</div>
+            <div class="search-box wide">
+              ${searchIconSvg}
+              <input type="text" id="brandCode" list="codeList" placeholder="z. B. P0420" autocomplete="off" aria-label="Fehlercode">
+            </div>
+            <button class="btn primary" type="button" id="go">Öffnen</button>
+            <a class="btn" href="${href("/marken/")}">Zur Markenübersicht</a>
+          </div>
+
+          <datalist id="codeList">
+            ${codeOptionsAll}
+          </datalist>
+
+          <p class="panel-note">Tipp: Wenn du keinen Code hast, musst du ihn zuerst auslesen (siehe <a href="${href("/wissen/obd2-auslesen/")}">OBD2 auslesen</a>).</p>
         </div>
-        <div class="search-box wide">
-          ${searchIconSvg}
-          <input type="text" id="q" placeholder="Code eingeben…" autocomplete="off" aria-label="Code suchen">
-        </div>
-        <button class="btn primary" type="button" id="go">Öffnen</button>
       </div>
 
       <p class="note" style="margin-top:0.9rem">
@@ -880,24 +874,31 @@ ${header()}
   </div>
 </main>
 ${footer()}
+${toastHtml()}
+${commonClientJs}
 
 <script>
 (function(){
   function norm(q){ return String(q||"").trim().toUpperCase().replace(/\s+/g,"").replace(/[^A-Z0-9]/g, ""); }
   function isObd(q){ return /^[PCBU]\d{4}$/.test(q); }
+  function toast(msg){
+    if(window.showToast) window.showToast(msg);
+    else alert(msg);
+  }
 
-  var inp = document.getElementById('q');
+  var inp = document.getElementById('brandCode');
   var go = document.getElementById('go');
+
   function open(){
     var v = norm(inp.value);
-    if(!v) return;
-    if(isObd(v)){
-      window.location.href = ${JSON.stringify(href(`/marke/${brandSlug}/code/`))} + v + '/';
+    if(!isObd(v)){
+      toast('Bitte einen gültigen OBD-II Code wählen (z. B. P0420).');
+      inp.focus();
       return;
     }
-    // fallback: jump to index search
-    window.location.href = ${JSON.stringify(href('/'))} + '?brand=' + ${JSON.stringify(brandSlug)} + '&q=' + encodeURIComponent(inp.value);
+    window.location.href = ${JSON.stringify(href(`/marke/${brandSlug}/code/`))} + v + '/';
   }
+
   go.addEventListener('click', open);
   inp.addEventListener('keydown', function(e){ if(e.key==='Enter') open(); });
 })();
