@@ -1,435 +1,109 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OBD Code P0400 – Bedeutung, Symptome, Ursachen</title>
-<meta name="description" content="P0400: Allgemeine Fehlfunktion des AGR-Durchflusses. Erfahre Symptome, Ursachen, Dringlichkeit und erste Checks.">
-<link rel="canonical" href="https://obd-fehlercode-finder.de/code/P0400/">
-<style>/* ============================================
-   OBD Fehlercode Finder – Main Stylesheet
-   ============================================ */
-
-:root {
-  --bg: #f8f9fa;
-  --surface: #ffffff;
-  --text: #1a1a2e;
-  --text-muted: #5a5a7a;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --border: #e2e8f0;
-  --red: #dc2626;
-  --orange: #ea580c;
-  --green: #16a34a;
-  --radius: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  --max-w: 780px;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { font-size: 16px; scroll-behavior: smooth; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-}
-
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-/* ── Layout ─────────────────────────────── */
-.container { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem; }
-
-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 0;
-}
-
-header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.logo {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text);
-  text-decoration: none;
-}
-.logo span { color: var(--accent); }
-
-header nav a {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  margin-left: 1.25rem;
-}
-header nav a:hover { color: var(--accent); }
-
-main { padding: 2rem 0 3rem; }
-
-footer {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 1.5rem 0;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: center;
-}
-footer a { color: var(--text-muted); }
-footer .disclaimer { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem; }
-
-/* ── Search ─────────────────────────────── */
-.search-section { text-align: center; margin-bottom: 2.5rem; }
-.search-section h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-.search-section p { color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem; }
-
-.search-box {
-  position: relative;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 0.8rem 1rem 0.8rem 2.75rem;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 1rem;
-  background: var(--surface);
-  transition: border-color 0.2s;
-  outline: none;
-}
-.search-box input:focus { border-color: var(--accent); }
-.search-box input::placeholder { color: #aaa; }
-
-.search-box svg {
-  position: absolute;
-  left: 0.85rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  color: #aaa;
-  pointer-events: none;
-}
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-top: 4px;
-  max-height: 320px;
-  overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  z-index: 100;
-  display: none;
-}
-.search-results.open { display: block; }
-
-.search-results a {
-  display: block;
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  font-size: 0.9rem;
-}
-.search-results a:last-child { border-bottom: none; }
-.search-results a:hover { background: #f1f5f9; text-decoration: none; }
-.search-results a strong { color: var(--accent); margin-right: 0.5rem; }
-
-.search-results .no-results {
-  padding: 1rem;
-  color: var(--text-muted);
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-/* ── Ad Slot ────────────────────────────── */
-.ad-slot {
-  background: #f1f5f9;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  text-align: center;
-  color: #b0b0b0;
-  font-size: 0.8rem;
-  margin: 1.5rem 0;
-}
-
-/* ── Category Tags ──────────────────────── */
-.categories { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
-
-.cat-tag {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.cat-tag:hover, .cat-tag.active { background: var(--accent); color: #fff; border-color: var(--accent); text-decoration: none; }
-
-/* ── Code List ──────────────────────────── */
-.code-list { list-style: none; }
-
-.code-list li {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 0.5rem;
-  transition: box-shadow 0.2s;
-}
-.code-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-.code-list a {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  color: var(--text);
-  gap: 0.75rem;
-}
-.code-list a:hover { text-decoration: none; }
-
-.code-badge {
-  font-family: "SF Mono", SFMono-Regular, Consolas, monospace;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--accent);
-  min-width: 60px;
-}
-
-.code-title { font-size: 0.9rem; flex: 1; }
-
-.urgency-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.urgency-dot.low { background: var(--green); }
-.urgency-dot.medium { background: var(--orange); }
-.urgency-dot.high { background: var(--red); }
-
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 2rem 0 0.75rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 2px solid var(--accent);
-  display: inline-block;
-}
-
-/* ── Code Detail Page ───────────────────── */
-.breadcrumb {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-}
-.breadcrumb a { color: var(--text-muted); }
-.breadcrumb a:hover { color: var(--accent); }
-
-.code-header h1 {
-  font-size: 1.5rem;
-  line-height: 1.35;
-  margin-bottom: 0.5rem;
-}
-
-.code-header .short-meaning {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-}
-
-.urgency-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  margin-bottom: 1.5rem;
-}
-.urgency-badge.low { background: #dcfce7; color: #15803d; }
-.urgency-badge.medium { background: #fff7ed; color: #c2410c; }
-.urgency-badge.high { background: #fef2f2; color: #dc2626; }
-
-.content-section { margin-bottom: 1.75rem; }
-.content-section h2 { font-size: 1.15rem; margin-bottom: 0.6rem; }
-.content-section p { margin-bottom: 0.75rem; }
-
-.content-section ul {
-  list-style: disc;
-  padding-left: 1.5rem;
-}
-.content-section ul li { margin-bottom: 0.3rem; font-size: 0.95rem; }
-
-.faq-list { list-style: none; padding: 0; }
-.faq-item {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 0.5rem;
-  overflow: hidden;
-}
-.faq-question {
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--surface);
-  user-select: none;
-}
-.faq-question::after {
-  content: "+";
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  transition: transform 0.2s;
-}
-.faq-item.open .faq-question::after {
-  content: "−";
-}
-.faq-answer {
-  padding: 0 1rem 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  display: none;
-}
-.faq-item.open .faq-answer { display: block; }
-
-.related-codes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-.related-codes a {
-  font-family: "SF Mono", SFMono-Regular, Consolas, monospace;
-  font-size: 0.85rem;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--accent);
-  font-weight: 600;
-}
-.related-codes a:hover { background: var(--accent); color: #fff; text-decoration: none; }
-
-/* ── Responsive ─────────────────────────── */
-@media (max-width: 600px) {
-  .search-section h1 { font-size: 1.35rem; }
-  .code-header h1 { font-size: 1.25rem; }
-  .code-list a { padding: 0.6rem 0.75rem; }
-  header .container { justify-content: center; text-align: center; }
-  header nav a { margin-left: 0; margin-right: 1rem; }
-}
-</style>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was ist das AGR-System?","acceptedAnswer":{"@type":"Answer","text":"Es führt Abgase in den Ansaugtrakt zurück, um Stickoxide (NOx) zu reduzieren."}},{"@type":"Question","name":"Kann ich das AGR-Ventil reinigen?","acceptedAnswer":{"@type":"Answer","text":"Manchmal – mit speziellem AGR-Reiniger. Bei starker Verkokung hilft das oft nicht."}},{"@type":"Question","name":"Ist P0400 gefährlich?","acceptedAnswer":{"@type":"Answer","text":"Nicht direkt, aber Klopfen unter Last kann den Motor schädigen."}},{"@type":"Question","name":"Was kostet ein neues AGR-Ventil?","acceptedAnswer":{"@type":"Answer","text":"80 bis 400 Euro je nach Fahrzeug."}},{"@type":"Question","name":"Betrifft das Diesel und Benziner?","acceptedAnswer":{"@type":"Answer","text":"Ja, beide Motortypen haben AGR-Systeme."}},{"@type":"Question","name":"Kann ich das AGR-Ventil abklemmen?","acceptedAnswer":{"@type":"Answer","text":"Nicht empfehlenswert und in vielen Ländern illegal."}}]}</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <title>OBD Code P0400 – Bedeutung, Symptome, Ursachen</title>
+  <meta name="description" content="P0400: Allgemeine Fehlfunktion des AGR-Durchflusses. Symptome, Ursachen, Dringlichkeit und Checks.">
+  <link rel="canonical" href="https://obd-fehlercode-finder.de/code/P0400/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was ist das AGR-System?","acceptedAnswer":{"@type":"Answer","text":"Es führt Abgase in den Ansaugtrakt zurück, um Stickoxide (NOx) zu reduzieren."}},{"@type":"Question","name":"Kann ich das AGR-Ventil reinigen?","acceptedAnswer":{"@type":"Answer","text":"Manchmal – mit speziellem AGR-Reiniger. Bei starker Verkokung hilft das oft nicht."}},{"@type":"Question","name":"Ist P0400 gefährlich?","acceptedAnswer":{"@type":"Answer","text":"Nicht direkt, aber Klopfen unter Last kann den Motor schädigen."}},{"@type":"Question","name":"Was kostet ein neues AGR-Ventil?","acceptedAnswer":{"@type":"Answer","text":"80 bis 400 Euro je nach Fahrzeug."}},{"@type":"Question","name":"Betrifft das Diesel und Benziner?","acceptedAnswer":{"@type":"Answer","text":"Ja, beide Motortypen haben AGR-Systeme."}},{"@type":"Question","name":"Kann ich das AGR-Ventil abklemmen?","acceptedAnswer":{"@type":"Answer","text":"Nicht empfehlenswert und in vielen Ländern illegal."}}]}</script>
 </head>
 <body>
-<header><div class="container"><a href="/" class="logo">OBD <span>Fehlercode Finder</span></a><nav><a href="/">Startseite</a></nav></div></header>
+<header>
+  <div class="container">
+    <a href="/" class="logo">OBD <span>Fehlercode Finder</span></a>
+    <nav>
+      <a href="/">Start</a>
+      <a href="/#bmw-section">BMW</a>
+      <a href="/datenschutz/">Datenschutz</a>
+      <a href="/impressum/">Impressum</a>
+    </nav>
+  </div>
+</header>
 <main>
-<div class="container">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Startseite</a> ›
+      <a href="/#cat-egr">Abgasrückführung</a> ›
+      P0400
+    </div>
 
-<div class="breadcrumb"><a href="/">Startseite</a> &rsaquo; <a href="/#cat-egr">Abgasrückführung</a> &rsaquo; P0400</div>
+    <div class="code-header">
+      <h1>OBD Code P0400 – Bedeutung, Symptome, Ursachen</h1>
+      <p class="short-meaning">Allgemeine Fehlfunktion des AGR-Durchflusses.</p>
+      <div class="urgency-badge medium">
+        <span class="urgency-dot medium"></span>
+        Dringlichkeit: Mittel
+      </div>
+      <p class="note" style="margin-top:0.75rem">
+    Hinweis: OBD-II Codes (v. a. <strong>P0xxx</strong>) sind generisch. Die genaue Ursache kann je nach Hersteller/Modell/Motorisierung abweichen – für eine sichere Diagnose ist ein Live-Daten/Freeze-Frame-Check sinnvoll.
+  </p>
+    </div>
 
-<div class="code-header">
-  <h1>OBD Code P0400 – Bedeutung, Symptome, Ursachen</h1>
-  <p class="short-meaning">Allgemeine Fehlfunktion des AGR-Durchflusses.</p>
-  <div class="urgency-badge medium"><span class="urgency-dot medium"></span> Dringlichkeit: Mittel</div>
-</div>
+    <div class="content-section">
+      <h2>Bedeutung</h2>
+      <p>Das Steuergerät erkennt, dass der AGR-Durchfluss nicht den Erwartungen entspricht.</p>
+    </div>
 
-<div class="content-section">
-  <h2>Bedeutung</h2>
-  <p>Das Steuergerät erkennt, dass der AGR-Durchfluss nicht den Erwartungen entspricht.</p>
-</div>
+    <div class="content-section">
+      <h2>Symptome</h2>
+      <ul><li>Motorkontrollleuchte leuchtet</li><li>Klopfgeräusche unter Last möglich</li><li>Erhöhte NOx-Emissionen</li><li>Leerlaufprobleme möglich</li><li>AU-Probleme</li></ul>
+    </div>
 
-<div class="content-section">
-  <h2>Symptome</h2>
-  <ul><li>Motorkontrollleuchte leuchtet</li>
-<li>Klopfgeräusche unter Last möglich</li>
-<li>Erhöhte NOx-Emissionen</li>
-<li>Leerlaufprobleme möglich</li>
-<li>AU-Probleme</li></ul>
-</div>
+    <div class="content-section">
+      <h2>Mögliche Ursachen</h2>
+      <ul><li>AGR-Ventil verkokt oder verstopft</li><li>Blockierte AGR-Leitungen</li><li>Defekter AGR-Drucksensor</li><li>Defektes AGR-Ventil</li><li>Verstopfter AGR-Kühler</li><li>Verkoktes Ansaugrohr</li><li>Vakuumproblem (ältere Fahrzeuge)</li><li>Fehlerhafte Verkabelung</li></ul>
+    </div>
 
-<div class="content-section">
-  <h2>Mögliche Ursachen</h2>
-  <ul><li>AGR-Ventil verkokt oder verstopft</li>
-<li>Blockierte AGR-Leitungen</li>
-<li>Defekter AGR-Drucksensor</li>
-<li>Defektes AGR-Ventil</li>
-<li>Verstopfter AGR-Kühler</li>
-<li>Verkoktes Ansaugrohr</li>
-<li>Vakuumproblem (ältere Fahrzeuge)</li>
-<li>Fehlerhafte Verkabelung</li></ul>
-</div>
+    <div class="content-section">
+      <h2>Wie dringend ist P0400?</h2>
+      <p><strong>Mittel:</strong> Sollte in den nächsten Tagen bis Wochen untersucht werden. Weiterfahrt meist möglich.</p>
+    </div>
 
-<div class="content-section">
-  <h2>Wie dringend ist P0400?</h2>
-  <p><strong>Mittel:</strong> Sollte in den nächsten Tagen bis Wochen untersucht werden. Weiterfahrt meist möglich.</p>
-</div>
+    <div class="ad-slot"><!-- Ad placeholder --></div>
 
-<!-- AdSense placeholder: ad after urgency section -->
-<div class="ad-slot"><!-- Ad placeholder – AdSense code here --></div>
+    <div class="content-section">
+      <h2>Erste Checks (sichere Basics)</h2>
+      <ul><li>AGR-Ventil lokalisieren und sichtprüfen</li><li>Auf Rußablagerungen achten</li><li>Vakuumschläuche kontrollieren (ältere Fahrzeuge)</li><li>Steckverbindung am AGR-Ventil prüfen</li><li>Fehlercode löschen und beobachten</li></ul>
+      <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted)"><em>Hinweis: Diese Prüfungen ersetzen keine professionelle Diagnose.</em></p>
+    </div>
 
-<div class="content-section">
-  <h2>Erste Checks (sichere Basics)</h2>
-  <ul><li>AGR-Ventil lokalisieren und sichtprüfen</li>
-<li>Auf Rußablagerungen achten</li>
-<li>Vakuumschläuche kontrollieren (ältere Fahrzeuge)</li>
-<li>Steckverbindung am AGR-Ventil prüfen</li>
-<li>Fehlercode löschen und beobachten</li></ul>
-  <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted)"><em>Hinweis: Diese Prüfungen ersetzen keine professionelle Diagnose. Arbeiten am Fahrzeug auf eigene Gefahr.</em></p>
-</div>
+    <div class="content-section">
+      <h2>Wann in die Werkstatt?</h2>
+      <p>Wenn der Fehler persistent ist – AGR-Ventil muss ggf. gereinigt oder getauscht werden.</p>
+    </div>
 
-<div class="content-section">
-  <h2>Wann in die Werkstatt?</h2>
-  <p>Wenn der Fehler persistent ist – AGR-Ventil muss ggf. gereinigt oder getauscht werden.</p>
-</div>
+    <div class="content-section">
+      <h2>Häufige Fragen zu P0400</h2>
+      <ul class="faq-list"><li class="faq-item"><div class="faq-question">Was ist das AGR-System?</div><div class="faq-answer">Es führt Abgase in den Ansaugtrakt zurück, um Stickoxide (NOx) zu reduzieren.</div></li><li class="faq-item"><div class="faq-question">Kann ich das AGR-Ventil reinigen?</div><div class="faq-answer">Manchmal – mit speziellem AGR-Reiniger. Bei starker Verkokung hilft das oft nicht.</div></li><li class="faq-item"><div class="faq-question">Ist P0400 gefährlich?</div><div class="faq-answer">Nicht direkt, aber Klopfen unter Last kann den Motor schädigen.</div></li><li class="faq-item"><div class="faq-question">Was kostet ein neues AGR-Ventil?</div><div class="faq-answer">80 bis 400 Euro je nach Fahrzeug.</div></li><li class="faq-item"><div class="faq-question">Betrifft das Diesel und Benziner?</div><div class="faq-answer">Ja, beide Motortypen haben AGR-Systeme.</div></li><li class="faq-item"><div class="faq-question">Kann ich das AGR-Ventil abklemmen?</div><div class="faq-answer">Nicht empfehlenswert und in vielen Ländern illegal.</div></li></ul>
+    </div>
 
-<div class="content-section">
-  <h2>Häufige Fragen zu P0400</h2>
-  <ul class="faq-list"><li class="faq-item"><div class="faq-question">Was ist das AGR-System?</div><div class="faq-answer">Es führt Abgase in den Ansaugtrakt zurück, um Stickoxide (NOx) zu reduzieren.</div></li>
-<li class="faq-item"><div class="faq-question">Kann ich das AGR-Ventil reinigen?</div><div class="faq-answer">Manchmal – mit speziellem AGR-Reiniger. Bei starker Verkokung hilft das oft nicht.</div></li>
-<li class="faq-item"><div class="faq-question">Ist P0400 gefährlich?</div><div class="faq-answer">Nicht direkt, aber Klopfen unter Last kann den Motor schädigen.</div></li>
-<li class="faq-item"><div class="faq-question">Was kostet ein neues AGR-Ventil?</div><div class="faq-answer">80 bis 400 Euro je nach Fahrzeug.</div></li>
-<li class="faq-item"><div class="faq-question">Betrifft das Diesel und Benziner?</div><div class="faq-answer">Ja, beide Motortypen haben AGR-Systeme.</div></li>
-<li class="faq-item"><div class="faq-question">Kann ich das AGR-Ventil abklemmen?</div><div class="faq-answer">Nicht empfehlenswert und in vielen Ländern illegal.</div></li>
-</ul>
-</div>
-
-<div class="content-section"><h2>Verwandte Fehlercodes</h2><div class="related-codes"><a href="/code/P0401/">P0401</a><a href="/code/P0402/">P0402</a><a href="/code/P0403/">P0403</a><a href="/code/P0404/">P0404</a><a href="/code/P0171/">P0171</a></div></div>
-
-</div>
+    <div class="content-section"><h2>Verwandte Fehlercodes</h2><div class="related-codes"><a href="/code/P0401/">P0401</a><a href="/code/P0402/">P0402</a><a href="/code/P0403/">P0403</a><a href="/code/P0404/">P0404</a><a href="/code/P0171/">P0171</a></div></div>
+  </div>
 </main>
-<footer><div class="disclaimer"><p><strong>Haftungsausschluss:</strong> Diese Website dient ausschließlich der allgemeinen Information. Sie stellt keine Reparatur-, Rechts- oder Kaufberatung dar. Für Diagnose und Reparatur wenden Sie sich an eine qualifizierte Kfz-Werkstatt. Alle Angaben ohne Gewähr.</p><p style="margin-top:0.5rem">&copy; 2026 OBD Fehlercode Finder</p></div></footer>
 
+<footer>
+  <div class="container">
+    <div class="disclaimer">
+      <p><strong>Haftungsausschluss:</strong> Diese Website dient ausschließlich der allgemeinen Information. Sie stellt keine Reparatur-, Rechts- oder Kaufberatung dar. Für Diagnose und Reparatur wenden Sie sich an eine qualifizierte Kfz-Werkstatt. Alle Angaben ohne Gewähr.</p>
+      <p style="margin-top:0.75rem">
+        <a href="/datenschutz/">Datenschutz</a> ·
+        <a href="/impressum/">Impressum</a>
+      </p>
+      <p style="margin-top:0.75rem">&copy; 2026 OBD Fehlercode Finder</p>
+    </div>
+  </div>
+</footer>
 <script>
-// FAQ accordion
-document.querySelectorAll(".faq-question").forEach(function(el){
-  el.addEventListener("click",function(){
-    this.parentElement.classList.toggle("open");
+  // FAQ toggle (simple, no dependencies)
+  document.querySelectorAll(".faq-question").forEach(function(el){
+    el.addEventListener("click", function(){
+      this.parentElement.classList.toggle("open");
+    });
   });
-});
 </script>
 </body>
 </html>
